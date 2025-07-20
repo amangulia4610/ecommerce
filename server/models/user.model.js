@@ -1,4 +1,3 @@
-import { verify } from "jsonwebtoken";
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -21,7 +20,7 @@ const userSchema = new mongoose.Schema({
     },
     mobile: {
         type: Number,
-        required: [true, "Mobile number is required"],
+        default: null,
     },
     refresh_token: {
         type: String,
