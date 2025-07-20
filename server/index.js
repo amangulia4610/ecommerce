@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 import helmet from 'helmet'
 import connectDB from './config/connectDB.js'
+import userRouter from './route/user.route.js'
 const app = express()
 app.use(cors({
     credentials : true,
@@ -27,6 +28,7 @@ app.get("/",(request,response)=>{
     })
 })
 
+app.use('/api/user',userRouter)
 // Connect to MongoDB
 connectDB().then(() => {
 app.listen(PORT,()=>{
