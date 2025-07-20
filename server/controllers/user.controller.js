@@ -4,6 +4,7 @@ import sendEmail from "../config/sendemail.js";
 import verifyEmailTemplate from "../utils/verifyEmailTemplate.js";
 import generateAccessToken from "../utils/generatedAccessToken.js";
 import generatedRefreshToken from "../utils/generatedRefreshToken.js";
+import uploadImageCloudinary from "../utils/uploadImageCloudinary.js";
 
 export async function registerUserController(req, res) {
     try {
@@ -165,5 +166,70 @@ export async function logoutController(req, res) {
     } catch (error) {
         console.error("Error logging out user:", error);
         res.status(500).json({ message: "Internal server error in logout controller", error: true, success: false });
+    }
+}
+
+//upload user avatar controller
+export async function uploadAvatar(req, res) {
+    try {
+        const userId = req.userId; // Get user ID from the middleware
+        const image = req.file; // using multer for file uploads - 'req.file' for single file
+
+        if (!image) {
+            return res.status(400).json({ message: "No file uploaded", error: true, success: false });
+        }
+        
+        console.log("File received:", image); // Debug log
+        const upload = await uploadImageCloudinary(image)
+        
+        // Update user's avatar in the database
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            userId,
+            { avatar: upload.url }, // Assuming 'avatar' is the field in your user model
+        );
+
+        return res.status(200).json({
+            message: "Avatar uploaded successfully",
+            success: true,
+            error: false,
+            data: {
+                avatar: upload.url,
+                user: updatedUser
+            },
+        });
+    } catch (error) {
+        console.error("Error uploading avatar:", error);
+        res.status(500).json({ message: "Internal server error in upload avatar controller", error: true, success: false });
+    }
+}
+
+//Update user Details
+
+export async function updateUserDetails(req, res) {
+    try {
+        const userId = req.userId; // Get user ID from the middleware
+        const { name, email, mobile, password } = req.body;
+
+
+        // Update user details in the database
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            userId,
+            { ...(name && {name: name}),
+                ...(email && {email: email}),
+                ...(mobile && {mobile: mobile}),
+                ...(password && {password: await bcrypt.hash(password, 10)}) // Hash password if provided
+                },
+            { new: true } // Return the updated document
+        );
+
+        return res.status(200).json({
+            message: "User details updated successfully",
+            success: true,
+            error: false,
+            data: updatedUser,
+        });
+    } catch (error) {
+        console.error("Error updating user details:", error);
+        res.status(500).json({ message: error.message || "Internal server error in updating user details", error: true, success: false });
     }
 }
