@@ -8,17 +8,16 @@ const subCategorySchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: [true, "Sub category image is required"]
+        default: "",
     },
-    categoryId: [{
+    category: [{
         type: mongoose.Schema.ObjectId,
-        ref: "Category",
-        required: [true, "Category ID is required"]
+        ref: "category",
     }]
 }, {
     timestamps: true
 });
 
-const SubCategoryModel = mongoose.model("SubCategory", subCategorySchema);
+const SubCategoryModel = mongoose.model("subCategory", subCategorySchema);
 
 export default SubCategoryModel;

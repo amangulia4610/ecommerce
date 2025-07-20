@@ -44,19 +44,19 @@ const userSchema = new mongoose.Schema({
     address_details: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Address",
+            ref: "address",
         }
     ],
     shopping_cart: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "CartProduct",
+            ref: "cartProduct",
         }
     ],
     orderHistory: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Order",
+            ref: "order",
         }
     ],
     forgot_password_otp: {
@@ -77,5 +77,5 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
 })
 
-const UserModel = mongoose.model("User", userSchema);
+const UserModel = mongoose.model("user", userSchema);
 export default UserModel;

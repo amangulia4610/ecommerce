@@ -3,23 +3,22 @@ import mongoose from "mongoose";
 const cartProductSchema = new mongoose.Schema({
     productId: {
         type: mongoose.Schema.ObjectId,
-        ref: "Product",
-        required: [true, "Product ID is required"]
+        ref: "product",
     },
     quantity: {
         type: Number,
         required: [true, "Quantity is required"],
-        min: [1, "Quantity must be at least 1"]
+        min: [1, "Quantity must be at least 1"],
+        default: 1
     },
     userId: {
         type: mongoose.Schema.ObjectId,
-        ref: "User",
-        required: [true, "User ID is required"]
+        ref: "user",
     }
 }, {
     timestamps: true
 });
 
-const CartProductModel = mongoose.model("CartProduct", cartProductSchema);
+const CartProductModel = mongoose.model("cartProduct", cartProductSchema);
 
 export default CartProductModel;
