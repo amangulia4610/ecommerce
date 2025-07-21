@@ -2,9 +2,12 @@ import UserModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import sendEmail from "../config/sendemail.js";
 import verifyEmailTemplate from "../utils/verifyEmailTemplate.js";
-import generateAccessToken from "../utils/generatedAccessToken.js";
+import generatedAccessToken from "../utils/generatedAccessToken.js";
 import generatedRefreshToken from "../utils/generatedRefreshToken.js";
 import uploadImageCloudinary from "../utils/uploadImageCloudinary.js";
+import generatedOTP from "../utils/generatedOTP.js";
+import forgotPasswordTemplate from "../utils/forgotPasswordTemplate.js";
+import jwt from "jsonwebtoken";
 
 export async function registerUserController(req, res) {
     try {
@@ -109,7 +112,7 @@ export async function loginController(req, res) {
             return res.status(400).json({ message: "Invalid credentials" , error: true ,success: false });
         }
 
-        const accessToken = await generateAccessToken(user._id)
+        const accessToken = await generatedAccessToken(user._id)
         const refreshToken = await generatedRefreshToken(user._id);
 
         const cookieOptions = {
@@ -231,5 +234,195 @@ export async function updateUserDetails(req, res) {
     } catch (error) {
         console.error("Error updating user details:", error);
         res.status(500).json({ message: error.message || "Internal server error in updating user details", error: true, success: false });
+    }
+}
+
+//forgot password controller - not login
+export async function forgotPasswordController(req, res) {
+    try {
+        const { email } = req.body;
+
+        // Validate input
+        if (!email) {
+            return res.status(400).json({ message: "Enter Email" });
+        }
+
+        // Find user by email
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found with this email", error: true, success: false });
+        }
+
+        const otp = generatedOTP();
+        const expiry = new Date(Date.now() + 15 * 60 * 1000); // OTP valid for 15 minutes
+
+        // Update user's forgot password fields
+        const update = await UserModel.updateOne(
+            { _id: user._id },
+            { forgot_password_otp: otp, forgot_password_expiry: new Date(expiry).toISOString() } // Ensure expiry is in ISO format
+        );
+
+
+        // Send OTP to user's email
+        await sendEmail(
+            email,
+            "Forgot Password OTP from 20 Deg Ecommerce", 
+            forgotPasswordTemplate(user.name, otp) // Pass name and otp as separate parameters
+        );
+
+        return res.status(200).json({
+            message: "OTP sent to your email",
+            success: true,
+            error: false,
+        });
+    } catch (error) {
+        console.error("Error in forgot password controller:", error);
+        res.status(500).json({ message: error.message || "Internal server error in forgot password controller", error: true, success: false });
+    }
+}
+
+//verify forgot password OTP controller
+export async function verifyForgotPasswordOTP(req, res) {
+    try {
+        const { email, otp } = req.body;
+
+        // Validate input
+        if (!email || !otp) {
+            return res.status(400).json({ message: "Enter Email and OTP" });
+        }
+
+        // Find user by email
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found with this email", error: true, success: false });
+        }
+
+        // Check if OTP matches and is not expired
+        if (user.forgot_password_otp !== otp || new Date(user.forgot_password_expiry) < new Date()) {
+            return res.status(400).json({ message: "Invalid or expired OTP", error: true, success: false });
+        }
+
+        return res.status(200).json({
+            message: "OTP verified successfully",
+            success: true,
+            error: false,
+            data: user,
+        });
+    } catch (error) {
+        console.error("Error verifying forgot password OTP:", error);
+        res.status(500).json({ message: error.message || "Internal server error in verifying forgot password OTP", error: true, success: false });
+    }
+}
+
+//Reset password controller
+export async function resetPassword(req, res) {
+    try {
+        const { email, newPassword,confirmPassword } = req.body;
+
+        // Validate input
+        if (!email || !newPassword || !confirmPassword) {
+            return res.status(400).json({ message: "Enter Email and New Password or Confirm Password" });
+        }
+
+        // Find user by email
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found with this email", error: true, success: false });
+        }
+        // Check if new password and confirm password match
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ message: "New password and confirm password do not match", error: true, success: false });
+        }
+        // Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update user's password and clear OTP fields
+        const updatedUser = await UserModel.updateOne(
+            { _id: user._id },
+            { password: hashPassword, forgot_password_otp: null, forgot_password_expiry: "" } // Clear OTP fields
+        );
+
+        return res.status(200).json({
+            message: "Password reset successfully",
+            success: true,
+            error: false,
+            data: updatedUser,
+        });
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        res.status(500).json({ message: error.message || "Internal server error in resetting password", error: true, success: false });
+    }
+}
+
+//refresh token controller
+export async function refreshToken(req, res) {
+    try {
+        const refreshToken = req.cookies.refreshToken || req?.headers?.authorization?.split(" ")[1]; // [ Bearer token]
+        
+        if (!refreshToken) {
+            return res.status(401).json({
+                message: "Invalid token",
+                error: true,
+                success: false
+            });
+        }
+
+        let verifyToken;
+        try {
+            verifyToken = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY_REFRESH);
+        } catch (err) {
+            return res.status(401).json({
+                message: "Token is expired or invalid",
+                error: true,
+                success: false
+            });
+        }
+
+        const userId = verifyToken?.id; // Changed from _id to id
+
+        // Validate user exists and refresh token matches
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(401).json({
+                message: "User not found",
+                error: true,
+                success: false
+            });
+        }
+
+        // Validate refresh token matches the one stored in database
+        if (user.refresh_token !== refreshToken) {
+            return res.status(401).json({
+                message: "Invalid refresh token",
+                error: true,
+                success: false
+            });
+        }
+
+        const newAccessToken = await generatedAccessToken(userId); 
+        const cookiesOption = {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None"
+        };
+
+        res.cookie('accessToken', newAccessToken, cookiesOption);
+
+        return res.json({
+            message: "New Access token generated",
+            error: false,
+            success: true,
+            data: {
+                accessToken: newAccessToken
+            }
+        });
+
+    } catch (error) {
+        return res.status(500).json({ 
+            message: error.message || "Internal server error in refreshing access token", 
+            error: true, 
+            success: false 
+        });
     }
 }
