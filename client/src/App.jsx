@@ -9,7 +9,7 @@ import Footer from './components/Footer.jsx'
 function App() {
 
   return (
-    <>
+    <div className="min-h-screen bg-white">
     <Header />
     <main>
 
@@ -17,7 +17,7 @@ function App() {
 
     </main>
     <Footer />
-   </>
+   </div>
   )
 }
 
