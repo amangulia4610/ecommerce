@@ -35,7 +35,7 @@ return (
                     />
                 </div>
                 <button 
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-200 text-black px-3 py-1 rounded-full hover:bg-blue-600 focus:outline-none"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-200 text-black px-3 py-1 rounded-full hover:bg-blue-600 hover:text-white focus:outline-none"
                     onClick={handleSearchClick}
                 >
                     <IoSearch size={20} />

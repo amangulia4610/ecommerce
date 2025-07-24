@@ -38,20 +38,34 @@ export async function registerUserController(req, res) {
         const newUser = new UserModel(payload);
         const save = await newUser.save();
 
-        const verifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?code=${save?._id}`;
-        
-        const verifyEmail = await sendEmail(
-            email,
-            "Verify your email",
-            verifyEmailTemplate(name, verifyEmailUrl)
-        );
-        
-        return res.status(201).json({
-            message: "User registered successfully",
-            error: false,
-            success: true,
-            data: save,
-        });
+        // Try to send verification email, but don't fail registration if email fails
+        try {
+            const verifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?code=${save?._id}`;
+            
+            const verifyEmail = await sendEmail(
+                email,
+                "Verify your email",
+                verifyEmailTemplate(name, verifyEmailUrl)
+            );
+            
+            return res.status(201).json({
+                message: "User registered successfully. Verification email sent.",
+                error: false,
+                success: true,
+                data: save,
+            });
+        } catch (emailError) {
+            console.error("Error sending verification email:", emailError);
+            
+            // Return success even if email fails
+            return res.status(201).json({
+                message: "User registered successfully. However, verification email could not be sent. Please contact support.",
+                error: false,
+                success: true,
+                data: save,
+                emailError: "Verification email failed to send"
+            });
+        }
     
     } catch (error) {
         console.error("Error registering user:", error);
