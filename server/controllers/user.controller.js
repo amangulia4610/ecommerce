@@ -600,3 +600,61 @@ export async function userDetails(req, res) {
       });
   }
 }
+
+// Resend verification email controller
+export async function resendVerificationEmail(req, res) {
+  try {
+    const userId = req.userId; // Get user ID from the middleware
+
+    // Find user by ID
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User not found", error: true, success: false });
+    }
+
+    // Check if email is already verified
+    if (user.verify_email) {
+      return res
+        .status(400)
+        .json({ 
+          message: "Email is already verified", 
+          error: true, 
+          success: false 
+        });
+    }
+
+    try {
+      const verifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?code=${user._id}`;
+
+      await sendEmail(
+        user.email,
+        "Verify your email",
+        verifyEmailTemplate(user.name, verifyEmailUrl)
+      );
+
+      return res.status(200).json({
+        message: "Verification email sent successfully",
+        error: false,
+        success: true,
+      });
+    } catch (emailError) {
+      console.error("Error sending verification email:", emailError);
+      return res.status(500).json({
+        message: "Failed to send verification email. Please try again later.",
+        error: true,
+        success: false,
+      });
+    }
+  } catch (error) {
+    console.error("Error in resend verification email:", error);
+    res
+      .status(500)
+      .json({
+        message: "Internal server error in resending verification email",
+        error: true,
+        success: false,
+      });
+  }
+}

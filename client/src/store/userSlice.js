@@ -12,7 +12,9 @@ const initialValue = {
     address_details: [],
     shopping_cart: [],
     orderHistory: [],
-    role: ""
+    role: "",
+    createdAt: "",
+    updatedAt: ""
 }
 
 const userSlice = createSlice({
@@ -32,6 +34,8 @@ const userSlice = createSlice({
             state.shopping_cart = action.payload.shopping_cart || [];
             state.orderHistory = action.payload.orderHistory || [];
             state.role = action.payload.role || "";
+            state.createdAt = action.payload.createdAt || "";
+            state.updatedAt = action.payload.updatedAt || "";
         },
         clearUserDetails: (state) => {
             state._id = "";
@@ -46,6 +50,8 @@ const userSlice = createSlice({
             state.shopping_cart = [];
             state.orderHistory = [];
             state.role = "";
+            state.createdAt = "";
+            state.updatedAt = "";
         },
         updateUserField: (state, action) => {
             const { field, value } = action.payload;

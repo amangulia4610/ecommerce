@@ -10,7 +10,8 @@ import {
     verifyForgotPasswordOTP,
     resetPassword,
     refreshToken,
-    userDetails
+    userDetails,
+    resendVerificationEmail
 } from '../controllers/user.controller.js'
 import auth from '../middleware/auth.js'
 import upload from '../middleware/multer.js'
@@ -28,5 +29,6 @@ userRouter.put('/verify-forgot-password-otp', verifyForgotPasswordOTP)
 userRouter.put('/reset-password', resetPassword) 
 userRouter.post('/refresh-token', refreshToken)
 userRouter.get('/user-details',auth,userDetails)
+userRouter.post('/resend-verification-email', auth, resendVerificationEmail)
 
 export default userRouter

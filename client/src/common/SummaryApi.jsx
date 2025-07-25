@@ -32,6 +32,22 @@ const SummaryApi = {
     userDetails: {
         url: "/api/user/user-details",  
         method: "GET",
+    },
+    uploadAvatar: {
+        url: "/api/user/upload-avatar",
+        method: "PUT",
+    },
+    updateUser: {
+        url: "/api/user/update-user",
+        method: "PUT",
+    },
+    verifyEmail: {
+        url: "/api/user/verify-email",
+        method: "POST",
+    },
+    resendVerificationEmail: {
+        url: "/api/user/resend-verification-email",
+        method: "POST",
     }
 
 }
