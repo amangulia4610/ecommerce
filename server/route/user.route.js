@@ -9,7 +9,8 @@ import {
     forgotPasswordController,
     verifyForgotPasswordOTP,
     resetPassword,
-    refreshToken
+    refreshToken,
+    userDetails
 } from '../controllers/user.controller.js'
 import auth from '../middleware/auth.js'
 import upload from '../middleware/multer.js'
@@ -26,4 +27,6 @@ userRouter.put('/forgot-password', forgotPasswordController)
 userRouter.put('/verify-forgot-password-otp', verifyForgotPasswordOTP) 
 userRouter.put('/reset-password', resetPassword) 
 userRouter.post('/refresh-token', refreshToken)
+userRouter.get('/user-details',auth,userDetails)
+
 export default userRouter

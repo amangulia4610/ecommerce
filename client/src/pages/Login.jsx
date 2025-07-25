@@ -3,9 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaEnvelope, FaLock } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
+import useAuth from '../hooks/useAuth';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { refreshUserDetails } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -81,6 +83,13 @@ const Login = () => {
         }
         if (response.data.data?.refreshToken) {
           localStorage.setItem('refreshToken', response.data.data.refreshToken);
+        }
+        
+        // Fetch user details and update Redux store
+        try {
+          await refreshUserDetails();
+        } catch (userError) {
+          console.error('Failed to fetch user details after login:', userError);
         }
         
         // On success, redirect to dashboard or home

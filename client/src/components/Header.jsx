@@ -1,9 +1,11 @@
 import Search from './search.jsx';
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth.js';
 
 const Header = () => {
   const navigate = useNavigate();
+  const { user, isLoggedIn, logout: logoutUser } = useAuth();
 
   const handleLogoClick = () => {
     navigate('/');
@@ -11,6 +13,10 @@ const Header = () => {
 
   const handleLoginClick = () => {
     navigate('/login');
+  };
+
+  const handleLogout = async () => {
+    await logoutUser();
   };
 
   return (
@@ -44,12 +50,28 @@ const Header = () => {
           </button>
 
           {/* Login/User */}
-          <button 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-            onClick={handleLoginClick}
-          >
+          {isLoggedIn ? (
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 text-gray-700">
+                <FaUser className="w-4 h-4" />
+                <span className="font-medium">{user.name}</span>
+              </div>
+              <button 
+                className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-medium transition-colors flex items-center space-x-1"
+                onClick={handleLogout}
+              >
+                <FaSignOutAlt className="w-4 h-4" />
+                <span>Logout</span>
+              </button>
+            </div>
+          ) : (
+            <button 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              onClick={handleLoginClick}
+            >
               Login
-          </button>
+            </button>
+          )}
         </div>
       </div>
 
@@ -75,12 +97,28 @@ const Header = () => {
             </button>
 
             {/* Login/User */}
-            <button 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-              onClick={handleLoginClick}
-            >
+            {isLoggedIn ? (
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 text-gray-700">
+                  <FaUser className="w-4 h-4" />
+                  <span className="font-medium text-sm">{user.name}</span>
+                </div>
+                <button 
+                  className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded font-medium transition-colors flex items-center space-x-1 text-sm"
+                  onClick={handleLogout}
+                >
+                  <FaSignOutAlt className="w-3 h-3" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            ) : (
+              <button 
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                onClick={handleLoginClick}
+              >
                 Login
-            </button>
+              </button>
+            )}
           </div>
         </div>
 

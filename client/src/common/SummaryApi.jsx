@@ -25,6 +25,14 @@ const SummaryApi = {
         url: "/api/user/refresh-token",
         method: "POST",
     },
+    logout: {
+        url: "/api/user/logout",
+        method: "GET",
+    },
+    userDetails: {
+        url: "/api/user/user-details",  
+        method: "GET",
+    }
 
 }
 export default SummaryApi;
