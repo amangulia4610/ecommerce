@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaEnvelope, FaLock } from 'react-icons/fa';
+import Axios from '../utils/Axios';
+import SummaryApi from '../common/SummaryApi';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -34,11 +36,13 @@ const Login = () => {
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = 'Please enter a valid email address';
     }
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters long';
     }
 
     setErrors(newErrors);
@@ -54,22 +58,53 @@ const Login = () => {
 
     setIsLoading(true);
     
+    
     try {
-      // Here you would typically make an API call to authenticate the user
-      console.log('Login data:', { ...formData, rememberMe });
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // On success, redirect to dashboard or home
-      navigate('/');
+      // Prepare data for API
+      const loginData = {
+        email: formData.email,
+        password: formData.password,
+      };
+
+      // Make API call to login the user
+      const response = await Axios({
+        url: SummaryApi.login.url,
+        method: SummaryApi.login.method,
+        data: loginData
+      });
+
+      // Check if login was successful
+      if (response.data.success) {
+        // Store tokens in localStorage
+        if (response.data.data?.accessToken) {
+          localStorage.setItem('accessToken', response.data.data.accessToken);
+        }
+        if (response.data.data?.refreshToken) {
+          localStorage.setItem('refreshToken', response.data.data.refreshToken);
+        }
+        
+        // On success, redirect to dashboard or home
+        navigate('/', { 
+          state: { message: 'Login successful!' }
+        });
+      } else {
+        // Handle server response with success: false
+        setErrors({ submit: response.data.message || 'Login failed. Please try again.' });
+      }
     } catch (error) {
-      console.error('Login error:', error);
-      setErrors({ submit: 'Invalid email or password. Please try again.' });
+      if (error.response) {
+        const errorMessage = error.response.data?.message || 'Login failed. Please try again.';
+        setErrors({ submit: errorMessage });
+      } else if (error.request) {
+        setErrors({ submit: 'Network error. Please check your connection and try again.' });
+      } else {
+        setErrors({ submit: 'Login failed. Please try again.' });
+      }
     } finally {
       setIsLoading(false);
     }
-  };
+    };
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

@@ -76,7 +76,6 @@ const Register = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        confirmPassword: formData.confirmPassword
       };
 
       console.log('Sending registration data:', registrationData);
