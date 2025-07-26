@@ -5,10 +5,14 @@ import {
   updateOrderStatusController,
   deleteOrderController,
   getOrderStatsController,
+  getUserOrdersController,
 } from '../controllers/order.controller.js';
 import auth from '../middleware/auth.js';
 
 const orderRouter = Router();
+
+// User routes
+orderRouter.get('/user-orders', auth, getUserOrdersController);
 
 // Admin routes
 orderRouter.get('/get-orders', auth, getOrdersController);

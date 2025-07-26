@@ -1,5 +1,66 @@
 import OrderModel from "../models/order.model.js";
 
+// Get user's orders
+export async function getUserOrdersController(req, res) {
+  try {
+    const userId = req.userId; // From auth middleware
+    const {
+      page = 1,
+      limit = 10,
+      payment_status,
+      startDate,
+      endDate,
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = req.query;
+
+    const filter = { userId };
+
+    if (payment_status) filter.payment_status = payment_status;
+    
+    if (startDate || endDate) {
+      filter.createdAt = {};
+      if (startDate) filter.createdAt.$gte = new Date(startDate);
+      if (endDate) filter.createdAt.$lte = new Date(endDate);
+    }
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const sortOptions = {};
+    sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+    const orders = await OrderModel.find(filter)
+      .populate('productId', 'name image price')
+      .populate('delivery_address')
+      .sort(sortOptions)
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const totalOrders = await OrderModel.countDocuments(filter);
+    const totalPages = Math.ceil(totalOrders / parseInt(limit));
+
+    return res.status(200).json({
+      message: "Orders retrieved successfully",
+      error: false,
+      success: true,
+      data: orders,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages,
+        totalOrders,
+        hasNextPage: parseInt(page) < totalPages,
+        hasPrevPage: parseInt(page) > 1,
+      }
+    });
+  } catch (error) {
+    console.error("Error in getUserOrdersController:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: true,
+      success: false,
+    });
+  }
+}
+
 // Get all orders with pagination and filters
 export async function getOrdersController(req, res) {
   try {

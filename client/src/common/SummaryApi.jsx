@@ -99,6 +99,10 @@ const SummaryApi = {
     },
     
     // Order APIs
+    getUserOrders: {
+        url: "/api/order/user-orders",
+        method: "GET"
+    },
     getOrders: {
         url: "/api/order/get-orders",
         method: "GET"
@@ -118,6 +122,28 @@ const SummaryApi = {
     getOrderStats: {
         url: "/api/order/order-stats",
         method: "GET"
+    },
+
+    // Address APIs
+    getUserAddresses: {
+        url: "/api/address/get-addresses",
+        method: "GET"
+    },
+    getAddress: {
+        url: "/api/address/get-address",
+        method: "GET"
+    },
+    createAddress: {
+        url: "/api/address/create-address",
+        method: "POST"
+    },
+    updateAddress: {
+        url: "/api/address/update-address",
+        method: "PUT"
+    },
+    deleteAddress: {
+        url: "/api/address/delete-address",
+        method: "DELETE"
     },
 
     // Admin - User Management

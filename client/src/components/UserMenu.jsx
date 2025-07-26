@@ -180,17 +180,6 @@ const UserMenu = () => {
               <FaMapMarkerAlt className="w-4 h-4 text-gray-500" />
               <span className="text-sm text-gray-700">Manage Addresses</span>
             </button>
-            
-            <button 
-              onClick={() => {
-                navigate('/settings');
-                setIsMenuOpen(false);
-              }}
-              className="w-full flex items-center space-x-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors"
-            >
-              <FaCog className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-700">Settings</span>
-            </button>
           </div>
 
           {/* Logout Button */}
