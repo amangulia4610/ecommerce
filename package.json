@@ -1,0 +1,12 @@
+{
+  "name": "bulk-upload",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "upload": "node bulk_upload_products.js"
+  },
+  "dependencies": {
+    "mongoose": "^8.0.0",
+    "dotenv": "^17.2.0"
+  }
+}
