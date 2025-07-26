@@ -146,6 +146,19 @@ const UserMenu = () => {
               <span className="text-sm font-medium">My Account</span>
             </button>
             
+            {user?.role === 'ADMIN' && (
+              <button
+                onClick={() => {
+                  navigate('/admin');
+                  setIsMenuOpen(false);
+                }}
+                className="w-full flex items-center space-x-3 p-3 text-left hover:bg-purple-50 rounded-lg transition-colors text-purple-600"
+              >
+                <FaCog className="w-4 h-4" />
+                <span className="text-sm font-medium">Admin Dashboard</span>
+              </button>
+            )}
+            
             <button 
               onClick={() => {
                 navigate('/orders');

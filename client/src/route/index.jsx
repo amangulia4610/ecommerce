@@ -8,6 +8,11 @@ import ForgotPassword from "../pages/ForgotPassword";
 import VerifyOTP from "../pages/VerifyOTP";
 import ResetPassword from "../pages/ResetPassword";
 import MyAccount from "../pages/MyAccount";
+import AdminDashboard from "../pages/AdminDashboard";
+import CategoryManagement from "../pages/CategoryManagement";
+import ProductManagement from "../pages/ProductManagement";
+import OrderManagement from "../pages/OrderManagement";
+import UserManagement from "../pages/UserManagement";
 
 const router = createBrowserRouter([
   { 
@@ -45,6 +50,26 @@ const router = createBrowserRouter([
       {
         path: "/my-account",
         element: <MyAccount />,
+      },
+      {
+        path: "/admin",
+        element: <AdminDashboard />,
+      },
+      {
+        path: "/admin/categories",
+        element: <CategoryManagement />,
+      },
+      {
+        path: "/admin/products",
+        element: <ProductManagement />,
+      },
+      {
+        path: "/admin/orders",
+        element: <OrderManagement />,
+      },
+      {
+        path: "/admin/users",
+        element: <UserManagement />,
       }
       
 
