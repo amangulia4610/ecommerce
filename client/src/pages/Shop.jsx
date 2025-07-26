@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { 
   FaShoppingCart, 
   FaHeart, 
@@ -8,86 +8,115 @@ import {
   FaStar,
   FaSearch,
   FaSort,
-  FaTh,
+  FaThLarge,
   FaList,
-  FaTimes
+  FaTh,
+  FaHome,
+  FaChevronRight
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 
-const Search = () => {
+const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  
+  // Get URL parameters
+  const urlSearchQuery = searchParams.get('q') || '';
+  const urlCategory = searchParams.get('category') || '';
+  
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [viewMode, setViewMode] = useState('grid');
-  const [showFilters, setShowFilters] = useState(false);
-  
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [filters, setFilters] = useState({
-    search: searchParams.get('q') || '',
-    category: searchParams.get('category') || '',
-    minPrice: searchParams.get('minPrice') || '',
-    maxPrice: searchParams.get('maxPrice') || '',
-    sortBy: searchParams.get('sortBy') || 'createdAt',
-    sortOrder: searchParams.get('sortOrder') || 'desc',
-    page: parseInt(searchParams.get('page')) || 1,
+    search: urlSearchQuery,
+    category: urlCategory,
+    minPrice: '',
+    maxPrice: '',
+    sortBy: 'createdAt',
+    sortOrder: 'desc',
+    page: 1,
     limit: 12
   });
-
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPages: 1,
     totalProducts: 0
   });
+  const [priceRange, setPriceRange] = useState([0, 1000]);
+
+  // Update filters when URL parameters change
+  useEffect(() => {
+    setFilters(prev => ({
+      ...prev,
+      search: urlSearchQuery,
+      category: urlCategory,
+      page: 1
+    }));
+  }, [urlSearchQuery, urlCategory]);
+
+  // Breadcrumb component
+  const Breadcrumbs = () => {
+    const breadcrumbs = [
+      { label: 'Home', path: '/', icon: FaHome }
+    ];
+    
+    breadcrumbs.push({ label: 'Shop', path: '/shop' });
+    
+    if (urlSearchQuery) {
+      breadcrumbs.push({ 
+        label: `Search results for "${urlSearchQuery}"`, 
+        path: `/shop?q=${urlSearchQuery}`,
+        isSearch: true
+      });
+    } else if (urlCategory) {
+      const category = categories.find(cat => cat._id === urlCategory);
+      if (category) {
+        breadcrumbs.push({ 
+          label: category.name, 
+          path: `/shop?category=${urlCategory}` 
+        });
+      }
+    }
+    
+    return (
+      <div className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+        {breadcrumbs.map((crumb, index) => (
+          <React.Fragment key={index}>
+            {index > 0 && <FaChevronRight className="w-3 h-3 text-gray-400" />}
+            {index === breadcrumbs.length - 1 ? (
+              <span className="flex items-center space-x-1 text-gray-900 font-medium">
+                {crumb.icon && <crumb.icon className="w-4 h-4" />}
+                {crumb.isSearch && <FaSearch className="w-3 h-3" />}
+                <span>{crumb.label}</span>
+              </span>
+            ) : (
+              <Link 
+                to={crumb.path}
+                className="flex items-center space-x-1 hover:text-blue-600 transition-colors"
+              >
+                {crumb.icon && <crumb.icon className="w-4 h-4" />}
+                <span>{crumb.label}</span>
+              </Link>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+  };
 
   useEffect(() => {
-    // Update search term from URL when component mounts or URL changes
-    const urlSearchTerm = searchParams.get('q') || '';
-    if (urlSearchTerm !== filters.search) {
-      setFilters(prev => ({
-        ...prev,
-        search: urlSearchTerm,
-        page: 1
-      }));
-    }
     fetchProducts();
     fetchCategories();
-  }, [searchParams]);
-
-  useEffect(() => {
-    // Only fetch products when filters change (not on initial mount)
-    if (filters.search || filters.category || filters.minPrice || filters.maxPrice) {
-      fetchProducts();
-    }
   }, [filters]);
-
-  useEffect(() => {
-    // Update URL params when filters change
-    const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value && key !== 'limit') {
-        params.set(key, value);
-      }
-    });
-    setSearchParams(params);
-  }, [filters, setSearchParams]);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
       const params = {
         ...filters,
-        publish: 'true'
+        publish: 'true' // Only show published products
       };
-
-      // Only make API call if there are search criteria
-      if (!params.search && !params.category && !params.minPrice && !params.maxPrice) {
-        // Show featured/popular products when no search criteria
-        params.sortBy = 'createdAt';
-        params.sortOrder = 'desc';
-        params.limit = 8;
-      }
 
       const response = await Axios({
         ...SummaryApi.getProducts,
@@ -122,19 +151,8 @@ const Search = () => {
     setFilters(prev => ({
       ...prev,
       [key]: value,
-      page: 1
+      page: 1 // Reset to first page when filtering
     }));
-    
-    // Update URL immediately for search term
-    if (key === 'search') {
-      const newParams = new URLSearchParams(searchParams);
-      if (value.trim()) {
-        newParams.set('q', value.trim());
-      } else {
-        newParams.delete('q');
-      }
-      setSearchParams(newParams);
-    }
   };
 
   const handlePageChange = (newPage) => {
@@ -156,6 +174,7 @@ const Search = () => {
       page: 1,
       limit: 12
     });
+    setPriceRange([0, 1000]);
   };
 
   const formatPrice = (price) => {
@@ -332,66 +351,48 @@ const Search = () => {
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              {filters.search ? 'Search Results' : 'Discover Products'}
+              {urlSearchQuery ? `Search Results` : 'Shop'}
             </h1>
             <p className="text-gray-600">
-              {filters.search 
-                ? `Results for "${filters.search}"` 
-                : 'Explore our collection or search for specific products'
+              {urlSearchQuery 
+                ? `Found ${pagination.totalProducts} products for "${urlSearchQuery}"`
+                : 'Discover our amazing collection of products'
               }
             </p>
-            {!filters.search && products.length > 0 && (
-              <p className="text-sm text-gray-500 mt-2">
-                Showing {products.length} featured products
-              </p>
-            )}
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Search Bar */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search for products..."
-                value={filters.search}
-                onChange={(e) => handleFilterChange('search', e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
-              />
-            </div>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="md:hidden bg-blue-600 text-white px-6 py-3 rounded-lg flex items-center space-x-2"
-            >
-              <FaFilter />
-              <span>Filters</span>
-            </button>
-          </div>
-        </div>
-
+        {/* Breadcrumbs */}
+        <Breadcrumbs />
+        
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
-          <div className={`lg:w-1/4 ${showFilters ? 'block' : 'hidden lg:block'}`}>
+          <div className="lg:w-1/4">
             <div className="bg-white rounded-xl shadow-md p-6 sticky top-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={clearFilters}
-                    className="text-sm text-blue-600 hover:text-blue-700"
-                  >
-                    Clear All
-                  </button>
-                  <button
-                    onClick={() => setShowFilters(false)}
-                    className="lg:hidden p-1 text-gray-400 hover:text-gray-600"
-                  >
-                    <FaTimes />
-                  </button>
+                <button
+                  onClick={clearFilters}
+                  className="text-sm text-blue-600 hover:text-blue-700"
+                >
+                  Clear All
+                </button>
+              </div>
+
+              {/* Search */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                <div className="relative">
+                  <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={filters.search}
+                    onChange={(e) => handleFilterChange('search', e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
                 </div>
               </div>
 
@@ -461,16 +462,8 @@ const Search = () => {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center space-x-4">
                   <span className="text-sm text-gray-600">
-                    {filters.search || filters.category || filters.minPrice || filters.maxPrice
-                      ? `Showing ${products.length} of ${pagination.totalProducts} results`
-                      : `Showing ${products.length} featured products`
-                    }
+                    Showing {products.length} of {pagination.totalProducts} products
                   </span>
-                  {filters.search && (
-                    <span className="text-sm bg-blue-100 text-blue-600 px-3 py-1 rounded-full">
-                      Search: "{filters.search}"
-                    </span>
-                  )}
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-600">View:</span>
@@ -514,28 +507,29 @@ const Search = () => {
               </div>
             ) : products.length === 0 ? (
               <div className="bg-white rounded-xl shadow-md p-12 text-center">
-                <FaSearch className="mx-auto text-gray-400 text-6xl mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {filters.search || filters.category || filters.minPrice || filters.maxPrice
-                    ? 'No Products Found'
-                    : 'Start Searching'
-                  }
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  {filters.search 
-                    ? `No products found for "${filters.search}". Try different keywords or adjust your filters.`
-                    : filters.category || filters.minPrice || filters.maxPrice
-                    ? 'No products match your current filters. Try adjusting them.'
-                    : 'Use the search bar above to find products, or browse our categories.'
-                  }
-                </p>
-                {(filters.search || filters.category || filters.minPrice || filters.maxPrice) && (
-                  <button
-                    onClick={clearFilters}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
-                  >
-                    Clear Filters
-                  </button>
+                {urlSearchQuery ? (
+                  <>
+                    <FaSearch className="mx-auto text-gray-400 text-6xl mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      No results found for "{urlSearchQuery}"
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      Try searching with different keywords or browse our categories below.
+                    </p>
+                    <Link 
+                      to="/shop" 
+                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      <FaShoppingCart className="w-4 h-4 mr-2" />
+                      Browse All Products
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <FaShoppingCart className="mx-auto text-gray-400 text-6xl mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No Products Found</h3>
+                    <p className="text-gray-600">Try adjusting your filters or search terms.</p>
+                  </>
                 )}
               </div>
             ) : (
@@ -610,4 +604,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default Shop;
