@@ -37,7 +37,7 @@ const Home = () => {
           limit: 8,
           publish: 'true',
           sortBy: 'createdAt',
-          sortOrder: 'desc'
+          sortOrder: 'asc'
         }
       });
 

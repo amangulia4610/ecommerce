@@ -37,7 +37,7 @@ const Shop = () => {
     minPrice: '',
     maxPrice: '',
     sortBy: 'createdAt',
-    sortOrder: 'desc',
+    sortOrder: 'asc',
     page: 1,
     limit: 12
   });
@@ -173,7 +173,7 @@ const Shop = () => {
       minPrice: '',
       maxPrice: '',
       sortBy: 'createdAt',
-      sortOrder: 'desc',
+      sortOrder: 'asc',
       page: 1,
       limit: 12
     });
