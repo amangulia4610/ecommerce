@@ -67,7 +67,14 @@ export async function addProductController(req, res) {
       price: parseFloat(price),
       discount: discount ? parseFloat(discount) : 0,
       description: description || "",
-      more_details: more_details ? JSON.parse(more_details) : {},
+      more_details: (() => {
+        try {
+          return more_details ? JSON.parse(more_details) : {};
+        } catch (error) {
+          console.error("Error parsing more_details:", error);
+          return more_details || {}; // Keep as string if parsing fails
+        }
+      })(),
       publish: publish !== undefined ? publish === 'true' : true,
     });
 
@@ -218,7 +225,14 @@ export async function updateProductController(req, res) {
     if (price !== undefined) updateData.price = parseFloat(price);
     if (discount !== undefined) updateData.discount = parseFloat(discount);
     if (description !== undefined) updateData.description = description;
-    if (more_details !== undefined) updateData.more_details = JSON.parse(more_details);
+    if (more_details !== undefined) {
+      try {
+        updateData.more_details = more_details ? JSON.parse(more_details) : {};
+      } catch (error) {
+        console.error("Error parsing more_details:", error);
+        updateData.more_details = more_details; // Keep as string if parsing fails
+      }
+    }
     if (publish !== undefined) updateData.publish = publish === 'true';
 
     // Handle image updates
@@ -256,10 +270,13 @@ export async function updateProductController(req, res) {
     });
   } catch (error) {
     console.error("Error in updateProductController:", error);
+    console.error("Error stack:", error.stack);
+    console.error("Request body:", req.body);
     return res.status(500).json({
       message: "Internal server error",
       error: true,
       success: false,
+      details: error.message // Add error details for debugging
     });
   }
 }

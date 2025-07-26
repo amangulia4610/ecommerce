@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { 
-  FaShoppingCart, 
   FaHeart, 
   FaEye, 
   FaFilter, 
@@ -19,6 +19,9 @@ import SummaryApi from '../common/SummaryApi';
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
   
   // Get URL parameters
   const urlSearchQuery = searchParams.get('q') || '';
@@ -192,11 +195,13 @@ const Shop = () => {
   const ProductCard = ({ product }) => (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
       <div className="relative overflow-hidden">
-        <img
-          src={product.image?.[0] || '/placeholder-image.jpg'}
-          alt={product.name}
-          className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-        />
+        <Link to={`/product/${product._id}`}>
+          <img
+            src={product.image?.[0] || '/placeholder-image.jpg'}
+            alt={product.name}
+            className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        </Link>
         {product.discount > 0 && (
           <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-full text-sm font-medium">
             -{product.discount}%
@@ -207,16 +212,13 @@ const Shop = () => {
             <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors">
               <FaHeart className="w-4 h-4 text-gray-600 hover:text-red-500" />
             </button>
-            <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors">
+            <Link 
+              to={`/product/${product._id}`}
+              className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+            >
               <FaEye className="w-4 h-4 text-gray-600 hover:text-blue-500" />
-            </button>
+            </Link>
           </div>
-        </div>
-        <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center space-x-2 shadow-lg">
-            <FaShoppingCart className="w-4 h-4" />
-            <span>Add to Cart</span>
-          </button>
         </div>
       </div>
       <div className="p-4">
@@ -230,7 +232,11 @@ const Shop = () => {
             </span>
           ))}
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
+        <Link to={`/product/${product._id}`}>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+            {product.name}
+          </h3>
+        </Link>
         <div className="flex items-center mb-2">
           <div className="flex text-yellow-400">
             {[...Array(5)].map((_, i) => (
@@ -268,11 +274,13 @@ const Shop = () => {
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <div className="flex">
         <div className="relative w-48 h-32">
-          <img
-            src={product.image?.[0] || '/placeholder-image.jpg'}
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
+          <Link to={`/product/${product._id}`}>
+            <img
+              src={product.image?.[0] || '/placeholder-image.jpg'}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+          </Link>
           {product.discount > 0 && (
             <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
               -{product.discount}%
@@ -292,7 +300,11 @@ const Shop = () => {
                   </span>
                 ))}
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{product.name}</h3>
+              <Link to={`/product/${product._id}`}>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
+                  {product.name}
+                </h3>
+              </Link>
               <div className="flex items-center mb-2">
                 <div className="flex text-yellow-400">
                   {[...Array(5)].map((_, i) => (
@@ -330,13 +342,12 @@ const Shop = () => {
               <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
                 <FaHeart className="w-4 h-4 text-gray-600 hover:text-red-500" />
               </button>
-              <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
+              <Link 
+                to={`/product/${product._id}`}
+                className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+              >
                 <FaEye className="w-4 h-4 text-gray-600 hover:text-blue-500" />
-              </button>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
-                <FaShoppingCart className="w-4 h-4" />
-                <span>Add to Cart</span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -520,13 +531,12 @@ const Shop = () => {
                       to="/shop" 
                       className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                     >
-                      <FaShoppingCart className="w-4 h-4 mr-2" />
                       Browse All Products
                     </Link>
                   </>
                 ) : (
                   <>
-                    <FaShoppingCart className="mx-auto text-gray-400 text-6xl mb-4" />
+                    <div className="mx-auto text-gray-400 text-6xl mb-4">🛍️</div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">No Products Found</h3>
                     <p className="text-gray-600">Try adjusting your filters or search terms.</p>
                   </>

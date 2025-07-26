@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { 
-  FaShoppingCart, 
   FaHeart, 
   FaEye, 
   FaFilter, 
@@ -193,12 +192,6 @@ const Search = () => {
             </button>
           </div>
         </div>
-        <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center space-x-2 shadow-lg">
-            <FaShoppingCart className="w-4 h-4" />
-            <span>Add to Cart</span>
-          </button>
-        </div>
       </div>
       <div className="p-4">
         <div className="flex flex-wrap gap-1 mb-2">
@@ -313,10 +306,6 @@ const Search = () => {
               </button>
               <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
                 <FaEye className="w-4 h-4 text-gray-600 hover:text-blue-500" />
-              </button>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
-                <FaShoppingCart className="w-4 h-4" />
-                <span>Add to Cart</span>
               </button>
             </div>
           </div>

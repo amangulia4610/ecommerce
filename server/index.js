@@ -9,9 +9,9 @@ import connectDB from './config/connectDB.js'
 import userRouter from './route/user.route.js'
 import categoryRouter from './route/category.route.js'
 import productRouter from './route/product.route.js'
-import orderRouter from './route/order.route.js'
-import addressRouter from './route/address.route.js'
 import userAdminRouter from './route/user.admin.route.js'
+import addressRouter from './route/address.route.js'
+import orderRouter from './route/order.route.js'
 
 const app = express()
 app.use(cors({
@@ -37,9 +37,9 @@ app.get("/",(request,response)=>{
 app.use('/api/user',userRouter)
 app.use('/api/category',categoryRouter)
 app.use('/api/product',productRouter)
-app.use('/api/order',orderRouter)
+app.use('/api/user-admin',userAdminRouter)
 app.use('/api/address',addressRouter)
-app.use('/api/admin/user',userAdminRouter)
+app.use('/api/order',orderRouter)
 // Connect to MongoDB
 connectDB().then(() => {
 app.listen(PORT,()=>{

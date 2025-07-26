@@ -1,6 +1,5 @@
 import Search from './search.jsx';
 import UserMenu from './UserMenu.jsx';
-import { FaShoppingCart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth.js';
 
@@ -36,16 +35,8 @@ const Header = () => {
           <Search />
         </div>
 
-        {/* Right side - Cart, User */}
+        {/* Right side - User */}
         <div className="flex items-center space-x-4">
-          {/* Cart */}
-          <button className="relative p-2 text-gray-700 hover:text-blue-600 transition-colors">
-            <FaShoppingCart className="w-6 h-6" />
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              3
-            </span>
-          </button>
-
           {/* Login/User */}
           {isLoggedIn ? (
             <UserMenu />
@@ -73,14 +64,6 @@ const Header = () => {
           </h1>
           
           <div className="flex items-center space-x-4">
-            {/* Cart */}
-            <button className="relative p-2 text-gray-700 hover:text-blue-600 transition-colors">
-              <FaShoppingCart className="w-6 h-6" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                3
-              </span>
-            </button>
-
             {/* Login/User */}
             {isLoggedIn ? (
               <UserMenu />

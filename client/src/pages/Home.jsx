@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  FaShoppingCart, 
   FaHeart, 
   FaEye, 
   FaStar,
@@ -139,12 +138,6 @@ const Home = () => {
               <FaEye className="w-4 h-4 text-gray-600 hover:text-blue-500" />
             </button>
           </div>
-        </div>
-        <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center space-x-2 shadow-lg">
-            <FaShoppingCart className="w-4 h-4" />
-            <span>Add to Cart</span>
-          </button>
         </div>
       </div>
       <div className="p-4">
