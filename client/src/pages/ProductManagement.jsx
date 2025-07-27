@@ -974,93 +974,152 @@ const ProductManagement = () => {
           </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <div key={product._id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="aspect-w-16 aspect-h-9">
-                <img
-                  src={product.image?.[0] || '/placeholder-image.jpg'}
-                  alt={product.name}
-                  className="w-full h-48 object-cover"
-                />
-              </div>
-              <div className="p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900 truncate">{product.name}</h3>
-                  <button
-                    onClick={() => handleTogglePublish(product._id)}
-                    className={`p-1 rounded ${
-                      product.publish 
-                        ? 'text-green-600 hover:bg-green-50' 
-                        : 'text-red-600 hover:bg-red-50'
-                    }`}
-                  >
-                    {product.publish ? <FaEye /> : <FaEyeSlash />}
-                  </button>
-                </div>
-                
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xl font-bold text-purple-600">
-                    {formatPrice(product.price)}
-                  </span>
-                  {product.discount > 0 && (
-                    <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded">
-                      -{product.discount}%
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm text-gray-600">
-                    Stock: {product.stock || 0}
-                  </span>
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    product.publish 
-                      ? 'bg-green-100 text-green-600' 
-                      : 'bg-red-100 text-red-600'
-                  }`}>
-                    {product.publish ? 'Published' : 'Unpublished'}
-                  </span>
-                </div>
-
-                <div className="mb-3">
-                  <div className="flex flex-wrap gap-1">
-                    {product.category?.slice(0, 2).map((cat, index) => (
-                      <span
-                        key={cat._id || index}
-                        className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
-                      >
-                        {cat.name}
-                      </span>
-                    ))}
-                    {product.category?.length > 2 && (
-                      <span className="text-xs text-gray-500">
-                        +{product.category.length - 2} more
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => openEditForm(product)}
-                    className="flex-1 bg-purple-600 text-white px-3 py-2 rounded hover:bg-purple-700 flex items-center justify-center"
-                  >
-                    <FaEdit className="mr-1" />
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteProduct(product._id)}
-                    className="flex-1 bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 flex items-center justify-center"
-                  >
-                    <FaTrash className="mr-1" />
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+        {/* Products List */}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Product
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Categories
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Price
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Stock
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {products.map((product) => (
+                  <tr key={product._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="h-16 w-16 flex-shrink-0">
+                          <img
+                            className="h-16 w-16 rounded-lg object-cover"
+                            src={product.image?.[0] || '/placeholder-image.jpg'}
+                            alt={product.name}
+                          />
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900 max-w-xs truncate">
+                            {product.name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {product.unit && `Unit: ${product.unit}`}
+                          </div>
+                          {product.description && (
+                            <div className="text-xs text-gray-400 max-w-xs truncate mt-1">
+                              {product.description}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-wrap gap-1">
+                        {product.category?.slice(0, 3).map((cat, index) => (
+                          <span
+                            key={cat._id || index}
+                            className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
+                          >
+                            {cat.name}
+                          </span>
+                        ))}
+                        {product.category?.length > 3 && (
+                          <span className="text-xs text-gray-500">
+                            +{product.category.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {formatPrice(product.price)}
+                      </div>
+                      {product.discount > 0 && (
+                        <div className="text-xs text-red-600">
+                          {product.discount}% off
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {product.stock || 0}
+                      </div>
+                      <div className={`text-xs ${
+                        (product.stock || 0) <= 5 
+                          ? 'text-red-600' 
+                          : (product.stock || 0) <= 20 
+                            ? 'text-yellow-600' 
+                            : 'text-green-600'
+                      }`}>
+                        {(product.stock || 0) <= 5 
+                          ? 'Low Stock' 
+                          : (product.stock || 0) <= 20 
+                            ? 'Medium Stock' 
+                            : 'Good Stock'
+                        }
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          product.publish 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {product.publish ? 'Published' : 'Unpublished'}
+                        </span>
+                        <button
+                          onClick={() => handleTogglePublish(product._id)}
+                          className={`ml-2 p-1 rounded ${
+                            product.publish 
+                              ? 'text-green-600 hover:bg-green-50' 
+                              : 'text-red-600 hover:bg-red-50'
+                          }`}
+                          title={product.publish ? 'Click to unpublish' : 'Click to publish'}
+                        >
+                          {product.publish ? <FaEye className="w-4 h-4" /> : <FaEyeSlash className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => openEditForm(product)}
+                          className="bg-purple-600 text-white px-3 py-1 rounded text-xs hover:bg-purple-700 flex items-center"
+                          title="Edit Product"
+                        >
+                          <FaEdit className="w-3 h-3 mr-1" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProduct(product._id)}
+                          className="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700 flex items-center"
+                          title="Delete Product"
+                        >
+                          <FaTrash className="w-3 h-3 mr-1" />
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {products.length === 0 && !loading && (

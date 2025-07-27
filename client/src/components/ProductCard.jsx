@@ -188,8 +188,8 @@ const ProductCard = ({
 
   if (variant === 'featured') {
     return (
-      <div className={`bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group ${className}`}>
-        <div className="relative overflow-hidden">
+      <div className={`bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group h-[420px] flex flex-col ${className}`}>
+        <div className="relative overflow-hidden flex-shrink-0">
           <Link to={`/product/${product._id}`}>
             <img
               src={product.image?.[0] || '/placeholder-image.jpg'}
@@ -203,9 +203,9 @@ const ProductCard = ({
             </div>
           )}
         </div>
-        <div className="p-3">
+        <div className="p-3 flex flex-col flex-1">
           <Link to={`/product/${product._id}`}>
-            <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+            <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors min-h-[2.5rem]">
               {product.name}
             </h3>
           </Link>
@@ -238,7 +238,7 @@ const ProductCard = ({
               Stock: {product.stock || 0}
             </span>
           </div>
-          <div>
+          <div className="mt-auto">
             {renderCartButton()}
           </div>
         </div>
@@ -248,13 +248,13 @@ const ProductCard = ({
 
   // Default grid variant
   return (
-    <div className={`bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group ${className}`}>
-      <div className="relative overflow-hidden">
+    <div className={`bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group h-[480px] flex flex-col ${className}`}>
+      <div className="relative overflow-hidden flex-shrink-0">
         <Link to={`/product/${product._id}`}>
           <img
             src={product.image?.[0] || '/placeholder-image.jpg'}
             alt={product.name}
-            className="w-full h-64 object-contain group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-56 object-contain group-hover:scale-105 transition-transform duration-300"
           />
         </Link>
         {product.discount > 0 && (
@@ -263,7 +263,7 @@ const ProductCard = ({
           </div>
         )}
       </div>
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-1">
         <div className="flex flex-wrap gap-1 mb-2">
           {product.category?.slice(0, 2).map((cat, index) => (
             <span
@@ -275,7 +275,7 @@ const ProductCard = ({
           ))}
         </div>
         <Link to={`/product/${product._id}`}>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors min-h-[3rem]">
             {product.name}
           </h3>
         </Link>
@@ -308,7 +308,7 @@ const ProductCard = ({
             Stock: {product.stock || 0}
           </span>
         </div>
-        <div>
+        <div className="mt-auto">
           {renderCartButton()}
         </div>
       </div>

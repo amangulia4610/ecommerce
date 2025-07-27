@@ -35,7 +35,7 @@ const OrderManagement = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
+  const [deliveryFilter, setDeliveryFilter] = useState('');
   const [message, setMessage] = useState({ text: '', type: '' });
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -51,36 +51,42 @@ const OrderManagement = () => {
   });
 
   useEffect(() => {
-    if (!user || user.role !== 'ADMIN') {
+    if (user._id && user.role !== 'ADMIN') {
       navigate('/');
       return;
     }
-    fetchOrders();
-    fetchOrderStats();
-  }, [user, navigate, searchTerm, statusFilter, dateFilter]);
+    if (user._id && user.role === 'ADMIN') {
+      fetchOrders();
+      fetchOrderStats();
+    }
+  }, [user._id, user.role, navigate, searchTerm, statusFilter, deliveryFilter]);
 
-  const fetchOrders = async (page = 1) => {
+  const fetchOrders = async (page = pagination.currentPage) => {
     try {
       setLoading(true);
-      const params = {
-        page,
-        limit: 10,
-        ...(searchTerm && { search: searchTerm }),
-        ...(statusFilter && { payment_status: statusFilter }),
-        ...(dateFilter && { startDate: dateFilter })
-      };
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '10'
+      });
+
+      if (searchTerm) params.append('search', searchTerm);
+      if (statusFilter) params.append('payment_status', statusFilter);
+      if (deliveryFilter) params.append('delivery_status', deliveryFilter);
 
       const response = await Axios({
         ...SummaryApi.getOrders,
-        params
+        url: `${SummaryApi.getOrders.url}?${params.toString()}`
       });
 
       if (response.data.success) {
         setOrders(response.data.data);
-        setPagination(response.data.pagination);
-        if (response.data.statistics) {
-          setOrderStats(response.data.statistics);
-        }
+        setPagination({
+          currentPage: response.data.pagination.currentPage,
+          totalPages: response.data.pagination.totalPages,
+          totalOrders: response.data.pagination.totalOrders
+        });
+      } else {
+        showMessage(response.data.message || 'Failed to fetch orders', 'error');
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -177,6 +183,25 @@ const OrderManagement = () => {
     }
   };
 
+  const handleQuickPaymentStatusUpdate = async (orderId, newStatus) => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.updateOrderStatus,
+        url: `${SummaryApi.updateOrderStatus.url}/${orderId}`,
+        data: { payment_status: newStatus }
+      });
+
+      if (response.data.success) {
+        showMessage(`Payment status updated to ${newStatus}`, 'success');
+        fetchOrders(); // Refresh the orders list
+        fetchOrderStats(); // Refresh stats as payment status affects revenue calculations
+      }
+    } catch (error) {
+      console.error('Error updating payment status:', error);
+      showMessage(error.response?.data?.message || 'Failed to update payment status', 'error');
+    }
+  };
+
   const handleDeleteOrder = async (orderId) => {
     if (!window.confirm('Are you sure you want to delete this order?')) {
       return;
@@ -198,6 +223,34 @@ const OrderManagement = () => {
       showMessage(error.response?.data?.message || 'Failed to delete order', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Icon components for status indicators
+  const PaymentStatusIcon = ({ status }) => {
+    switch (status?.toLowerCase()) {
+      case 'paid':
+      case 'completed':
+        return <FaCheckCircle className="w-3 h-3 text-green-600" />;
+      case 'pending':
+        return <FaClock className="w-3 h-3 text-yellow-600" />;
+      case 'failed':
+      case 'cancelled':
+        return <FaTimesCircle className="w-3 h-3 text-red-600" />;
+      default:
+        return <FaClock className="w-3 h-3 text-gray-600" />;
+    }
+  };
+
+  const DeliveryStatusIcon = ({ status }) => {
+    switch (status) {
+      case 'Delivered':
+        return <FaCheckCircle className="w-3 h-3 text-green-600" />;
+      case 'In Transit':
+        return <FaBox className="w-3 h-3 text-blue-600" />;
+      case 'Placed':
+      default:
+        return <FaClock className="w-3 h-3 text-orange-600" />;
     }
   };
 
@@ -319,40 +372,81 @@ const OrderManagement = () => {
         )}
 
         {/* Filters */}
-        <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by Order ID..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full focus:ring-orange-500 focus:border-orange-500"
-            />
+        <div className="mb-6 bg-white p-4 rounded-lg shadow">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <div className="relative">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by Order ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full focus:ring-orange-500 focus:border-orange-500"
+              />
+            </div>
+            
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+            >
+              <option value="">All Payment Status</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="completed">Completed</option>
+              <option value="failed">Failed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="refunded">Refunded</option>
+            </select>
+
+            <select
+              value={deliveryFilter}
+              onChange={(e) => setDeliveryFilter(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+            >
+              <option value="">All Delivery Status</option>
+              <option value="Placed">Placed</option>
+              <option value="In Transit">In Transit</option>
+              <option value="Delivered">Delivered</option>
+            </select>
+
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setStatusFilter('');
+                setDeliveryFilter('');
+              }}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center justify-center space-x-2"
+            >
+              <FaFilter className="w-4 h-4" />
+              <span>Clear Filters</span>
+            </button>
           </div>
           
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
-          >
-            <option value="">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="paid">Paid</option>
-            <option value="completed">Completed</option>
-            <option value="failed">Failed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-
-          <input
-            type="date"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
-          />
-
-          <div className="text-sm text-gray-600 flex items-center">
-            Total: {pagination.totalOrders} orders
+          <div className="flex justify-between items-center text-sm text-gray-600">
+            <div className="flex items-center space-x-4">
+              <span>Total: {pagination.totalOrders} orders</span>
+              {(searchTerm || statusFilter || deliveryFilter) && (
+                <div className="flex items-center space-x-2">
+                  <span className="text-blue-600 font-medium">Filters active:</span>
+                  {searchTerm && <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Search: {searchTerm}</span>}
+                  {statusFilter && <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Payment: {statusFilter}</span>}
+                  {deliveryFilter && <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Delivery: {deliveryFilter}</span>}
+                </div>
+              )}
+            </div>
+            <button
+              onClick={() => {
+                fetchOrders();
+                fetchOrderStats();
+              }}
+              disabled={loading}
+              className="flex items-center space-x-2 px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors disabled:opacity-50"
+            >
+              <FaCalendarAlt className="w-4 h-4" />
+              <span>Refresh Data</span>
+              {loading && <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>}
+            </button>
           </div>
         </div>
 
@@ -362,28 +456,28 @@ const OrderManagement = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Order Details
+                  <th className="px-3 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-24">
+                    Order ID
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-36">
                     Customer
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-44">
                     Product
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-28">
                     Amount
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Payment Status
+                  <th className="px-4 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-32">
+                    Payment
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Delivery Status
+                  <th className="px-4 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-32">
+                    Delivery
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-28">
                     Date
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-24">
                     Actions
                   </th>
                 </tr>
@@ -391,40 +485,40 @@ const OrderManagement = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {orders.map((order) => (
                   <tr key={order._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">
-                          #{order.orderId}
+                          #{order.orderId.split('-').pop()}
                         </div>
                         <div className="text-xs text-gray-500">
-                          {order._id.slice(-8)}
+                          {order._id.slice(-6)}
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-4 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 truncate max-w-32">
                           {order.userId?.name || 'N/A'}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-gray-500 truncate max-w-32">
                           {order.userId?.email || 'N/A'}
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-4 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         {order.items && order.items.length > 0 && order.items[0].productId?.image?.[0] && (
                           <img
-                            className="h-8 w-8 rounded object-contain mr-2"
+                            className="h-8 w-8 rounded object-contain mr-3 flex-shrink-0"
                             src={order.items[0].productId.image[0]}
                             alt={order.items[0].productId?.name}
                           />
                         )}
-                        <div>
-                          <div className="text-sm font-medium text-gray-900 truncate max-w-32">
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-medium text-gray-900 truncate max-w-36">
                             {order.items && order.items.length > 0 ? (
                               order.items.length > 1 ? (
-                                `${order.items[0].productId?.name || order.items[0].product_details?.name || 'N/A'} (+${order.items.length - 1} more)`
+                                `${order.items[0].productId?.name || order.items[0].product_details?.name || 'N/A'} (+${order.items.length - 1})`
                               ) : (
                                 order.items[0].productId?.name || order.items[0].product_details?.name || 'N/A'
                               )
@@ -433,12 +527,12 @@ const OrderManagement = () => {
                             )}
                           </div>
                           <div className="text-xs text-gray-500">
-                            Total Items: {order.items ? order.items.reduce((total, item) => total + (item.quantity || 0), 0) : 0}
+                            Items: {order.items ? order.items.reduce((total, item) => total + (item.quantity || 0), 0) : 0}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-4 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
                         {formatPrice(order.totalAmt || 0)}
                       </div>
@@ -446,41 +540,70 @@ const OrderManagement = () => {
                         Sub: {formatPrice(order.subTotalAmt || 0)}
                       </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.payment_status)}`}>
-                        {order.payment_status || 'pending'}
-                      </span>
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      <div className="flex items-center space-x-2">
+                        <PaymentStatusIcon status={order.payment_status} />
+                        <select
+                          value={order.payment_status || 'pending'}
+                          onChange={(e) => handleQuickPaymentStatusUpdate(order._id, e.target.value)}
+                          className={`text-sm border rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium min-w-[90px] ${
+                            order.payment_status === 'paid' || order.payment_status === 'completed' 
+                              ? 'bg-green-50 border-green-200 text-green-700' :
+                            order.payment_status === 'pending'
+                              ? 'bg-yellow-50 border-yellow-200 text-yellow-700' :
+                            order.payment_status === 'failed' || order.payment_status === 'cancelled'
+                              ? 'bg-red-50 border-red-200 text-red-700' :
+                              'bg-gray-50 border-gray-200 text-gray-700'
+                          }`}
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="paid">Paid</option>
+                          <option value="completed">Completed</option>
+                          <option value="failed">Failed</option>
+                          <option value="cancelled">Cancelled</option>
+                          <option value="refunded">Refunded</option>
+                        </select>
+                      </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <select
-                        value={order.delivery_status || 'Placed'}
-                        onChange={(e) => handleQuickDeliveryStatusUpdate(order._id, e.target.value)}
-                        className="text-xs border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                      >
-                        <option value="Placed">Placed</option>
-                        <option value="In Transit">In Transit</option>
-                        <option value="Delivered">Delivered</option>
-                      </select>
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      <div className="flex items-center space-x-2">
+                        <DeliveryStatusIcon status={order.delivery_status} />
+                        <select
+                          value={order.delivery_status || 'Placed'}
+                          onChange={(e) => handleQuickDeliveryStatusUpdate(order._id, e.target.value)}
+                          className={`text-sm border rounded px-2 py-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 font-medium min-w-[90px] ${
+                            order.delivery_status === 'Delivered'
+                              ? 'bg-green-50 border-green-200 text-green-700' :
+                            order.delivery_status === 'In Transit'
+                              ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                              'bg-orange-50 border-orange-200 text-orange-700'
+                          }`}
+                        >
+                          <option value="Placed">Placed</option>
+                          <option value="In Transit">In Transit</option>
+                          <option value="Delivered">Delivered</option>
+                        </select>
+                      </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-900">
-                      <div>{new Date(order.createdAt).toLocaleDateString()}</div>
-                      <div className="text-gray-500">{new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <div className="text-sm">{new Date(order.createdAt).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</div>
+                      <div className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleViewOrder(order._id)}
-                          className="text-blue-600 hover:text-blue-900 p-1"
+                          className="bg-blue-100 text-blue-700 hover:bg-blue-200 p-2 rounded-lg transition-colors duration-200 flex items-center justify-center"
                           title="View Details"
                         >
-                          <FaEye />
+                          <FaEye className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteOrder(order._id)}
-                          className="text-red-600 hover:text-red-900 p-1"
+                          className="bg-red-100 text-red-700 hover:bg-red-200 p-2 rounded-lg transition-colors duration-200 flex items-center justify-center"
                           title="Delete Order"
                         >
-                          <FaTrash />
+                          <FaTrash className="w-4 h-4" />
                         </button>
                       </div>
                     </td>

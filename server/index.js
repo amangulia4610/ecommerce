@@ -39,7 +39,7 @@ app.use('/api/user',userRouter)
 app.use('/api/category',categoryRouter)
 app.use('/api/product',productRouter)
 app.use('/api/cart',cartRouter)
-app.use('/api/user-admin',userAdminRouter)
+app.use('/api/admin/user',userAdminRouter)
 app.use('/api/address',addressRouter)
 app.use('/api/order',orderRouter)
 // Connect to MongoDB

@@ -12,7 +12,8 @@ import {
   FaShieldAlt,
   FaTruck,
   FaUndo,
-  FaShoppingCart
+  FaShoppingCart,
+  FaTrash
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
@@ -25,7 +26,8 @@ const ProductDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
-  const { addToCart } = useCart();
+  const cart = useSelector(state => state.cart);
+  const { addToCart, updateQuantity, removeItem } = useCart();
   
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,6 +35,12 @@ const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [updatingCart, setUpdatingCart] = useState(false);
+
+  // Check if product is in cart and get cart item details
+  const cartItem = cart.items?.find(item => item.productId?._id === productId);
+  const isInCart = !!cartItem;
+  const cartQuantity = cartItem?.quantity || 0;
 
   useEffect(() => {
     fetchProductDetails();
@@ -99,11 +107,33 @@ const ProductDetails = () => {
   };
 
   const handleAddToCart = async () => {
+    setUpdatingCart(true);
     const success = await addToCart(product._id, quantity);
     if (success) {
       // Optionally reset quantity to 1 after adding
       setQuantity(1);
     }
+    setUpdatingCart(false);
+  };
+
+  const handleUpdateCartQuantity = async (newQuantity) => {
+    if (!cartItem) return;
+    
+    setUpdatingCart(true);
+    if (newQuantity === 0) {
+      await removeItem(cartItem._id);
+    } else {
+      await updateQuantity(cartItem._id, newQuantity);
+    }
+    setUpdatingCart(false);
+  };
+
+  const handleRemoveFromCart = async () => {
+    if (!cartItem) return;
+    
+    setUpdatingCart(true);
+    await removeItem(cartItem._id);
+    setUpdatingCart(false);
   };
 
   if (loading) {
@@ -251,11 +281,62 @@ const ProductDetails = () => {
               </span>
             </div>
 
-            {/* Quantity Selection */}
+            {/* Cart Status */}
+            {isInCart && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <FaShoppingCart className="text-blue-600" />
+                    <span className="text-blue-800 font-medium">
+                      {cartQuantity} item{cartQuantity > 1 ? 's' : ''} in cart
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleRemoveFromCart}
+                    disabled={updatingCart}
+                    className="text-red-600 hover:text-red-700 text-sm font-medium disabled:opacity-50"
+                  >
+                    Remove from cart
+                  </button>
+                </div>
+                
+                {/* Cart Quantity Management */}
+                <div className="mt-3 flex items-center space-x-3">
+                  <span className="text-sm text-gray-700">Update quantity:</span>
+                  <div className="flex items-center border border-gray-300 rounded-lg">
+                    <button
+                      onClick={() => handleUpdateCartQuantity(cartQuantity - 1)}
+                      disabled={updatingCart || cartQuantity <= 1}
+                      className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <FaMinus className="w-3 h-3" />
+                    </button>
+                    <span className="px-3 py-2 font-medium text-sm">{cartQuantity}</span>
+                    <button
+                      onClick={() => handleUpdateCartQuantity(cartQuantity + 1)}
+                      disabled={updatingCart || cartQuantity >= product.stock}
+                      className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <FaPlus className="w-3 h-3" />
+                    </button>
+                  </div>
+                  {updatingCart && (
+                    <div className="flex items-center space-x-2 text-blue-600">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                      <span className="text-sm">Updating...</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Quantity Selection for New Additions */}
             {product.stock > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
-                  <span className="text-gray-700 font-medium">Quantity:</span>
+                  <span className="text-gray-700 font-medium">
+                    {isInCart ? 'Add more:' : 'Quantity:'}
+                  </span>
                   <div className="flex items-center border border-gray-300 rounded-lg">
                     <button
                       onClick={decreaseQuantity}
@@ -267,21 +348,36 @@ const ProductDetails = () => {
                     <span className="px-4 py-2 font-medium">{quantity}</span>
                     <button
                       onClick={increaseQuantity}
-                      disabled={quantity >= product.stock}
+                      disabled={quantity >= product.stock - cartQuantity}
                       className="p-2 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <FaPlus className="w-4 h-4" />
                     </button>
                   </div>
+                  {(quantity >= product.stock - cartQuantity) && cartQuantity > 0 && (
+                    <span className="text-sm text-orange-600">
+                      Max available: {product.stock - cartQuantity}
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex space-x-4">
                   <button
                     onClick={handleAddToCart}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+                    disabled={updatingCart || (cartQuantity + quantity > product.stock)}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
                   >
-                    <FaShoppingCart className="w-5 h-5" />
-                    <span>Add to Cart</span>
+                    {updatingCart ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Adding...</span>
+                      </>
+                    ) : (
+                      <>
+                        <FaShoppingCart className="w-5 h-5" />
+                        <span>{isInCart ? 'Add More' : 'Add to Cart'}</span>
+                      </>
+                    )}
                   </button>
                   
                   <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">

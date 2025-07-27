@@ -134,29 +134,19 @@ export async function createOrderController(req, res) {
 export async function getUserOrdersController(req, res) {
   try {
     const userId = req.userId; // From auth middleware
-    const {
-      page = 1,
-      limit = 10,
-      payment_status,
-      delivery_status,
-      startDate,
-      endDate,
-      sortBy = 'createdAt',
-      sortOrder = 'desc'
-    } = req.query;
+  const {
+    page = 1,
+    limit = 10,
+    payment_status,
+    delivery_status,
+    sortBy = 'createdAt',
+    sortOrder = 'desc'
+  } = req.query;
 
-    const filter = { userId };
+  const filter = { userId };
 
-    if (payment_status) filter.payment_status = payment_status;
-    if (delivery_status) filter.delivery_status = delivery_status;
-    
-    if (startDate || endDate) {
-      filter.createdAt = {};
-      if (startDate) filter.createdAt.$gte = new Date(startDate);
-      if (endDate) filter.createdAt.$lte = new Date(endDate);
-    }
-
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+  if (payment_status) filter.payment_status = payment_status;
+  if (delivery_status) filter.delivery_status = delivery_status;    const skip = (parseInt(page) - 1) * parseInt(limit);
     const sortOptions = {};
     sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
@@ -203,8 +193,6 @@ export async function getOrdersController(req, res) {
       userId,
       payment_status,
       delivery_status,
-      startDate,
-      endDate,
       search,
       sortBy = 'createdAt',
       sortOrder = 'desc'
@@ -216,12 +204,6 @@ export async function getOrdersController(req, res) {
     if (payment_status) filter.payment_status = payment_status;
     if (delivery_status) filter.delivery_status = delivery_status;
     if (search) filter.orderId = { $regex: search, $options: 'i' };
-    
-    if (startDate || endDate) {
-      filter.createdAt = {};
-      if (startDate) filter.createdAt.$gte = new Date(startDate);
-      if (endDate) filter.createdAt.$lte = new Date(endDate);
-    }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const sortOptions = {};
