@@ -267,7 +267,7 @@ const Home = () => {
           </button>
         </div>
 
-        {/* Indicators */}}
+        {/* Indicators */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
           {heroSlides.map((_, index) => (
             <button

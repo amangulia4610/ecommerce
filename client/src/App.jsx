@@ -3,6 +3,7 @@ import './App.css'
 import { Outlet } from 'react-router-dom'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
+import ScrollToTop from './components/ScrollToTop.jsx'
 import useAuth from './hooks/useAuth.js'
 import { Toaster } from 'react-hot-toast'
 
@@ -16,6 +17,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
+    <ScrollToTop />
     <Header />
     <main>
       <Outlet />
