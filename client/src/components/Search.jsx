@@ -152,7 +152,7 @@ const Search = () => {
                         onChange={handleInputChange}
                         onFocus={handleInputFocus}
                         onKeyPress={handleKeyPress}
-                        className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-xl bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400"
+                        className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-full bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-gray-700 placeholder-gray-400"
                         placeholder="Search for products..."
                     />
 
@@ -168,7 +168,7 @@ const Search = () => {
 
                     {/* Search button */}
                     <button 
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 focus:outline-none transition-all duration-200 shadow-sm"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white px-3 py-2 rounded-full hover:bg-blue-700 focus:outline-none transition-all duration-200 shadow-sm"
                         onClick={() => handleSearch()}
                     >
                         <IoSearch size={18} />

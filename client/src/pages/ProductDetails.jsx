@@ -18,6 +18,7 @@ import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import { useCart } from '../hooks/useCart';
 import { formatPrice, calculateDiscountedPrice } from '../utils/currency';
+import ProductCard from '../components/ProductCard';
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -335,62 +336,11 @@ const ProductDetails = () => {
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Products</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {relatedProducts.map(relatedProduct => (
-                <Link
+                <ProductCard
                   key={relatedProduct._id}
-                  to={`/product/${relatedProduct._id}`}
-                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group"
-                >
-                  <div className="relative aspect-square">
-                    <img
-                      src={relatedProduct.image?.[0] || '/placeholder-image.jpg'}
-                      alt={relatedProduct.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    {relatedProduct.discount > 0 && (
-                      <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-full text-sm font-medium">
-                        -{relatedProduct.discount}%
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {relatedProduct.name}
-                    </h3>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        {relatedProduct.discount > 0 ? (
-                          <>
-                            <span className="font-bold text-blue-600">
-                              {formatPrice(calculateDiscountedPrice(relatedProduct.price, relatedProduct.discount))}
-                            </span>
-                            <span className="text-sm text-gray-500 line-through">
-                              {formatPrice(relatedProduct.price)}
-                            </span>
-                          </>
-                        ) : (
-                          <span className="font-bold text-blue-600">
-                            {formatPrice(relatedProduct.price)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        addToCart(relatedProduct._id);
-                      }}
-                      disabled={relatedProduct.stock === 0}
-                      className={`w-full py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 ${
-                        relatedProduct.stock === 0
-                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                          : 'bg-blue-600 text-white hover:bg-blue-700'
-                      }`}
-                    >
-                      <FaShoppingCart className="w-4 h-4" />
-                      <span>{relatedProduct.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
-                    </button>
-                  </div>
-                </Link>
+                  product={relatedProduct}
+                  variant="featured"
+                />
               ))}
             </div>
           </div>

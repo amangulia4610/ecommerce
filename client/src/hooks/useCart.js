@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import { setCartItems, setCartLoading, addCartItem, updateCartItem, removeCartItem, clearCart } from '../store/cartSlice';
+import toast from 'react-hot-toast';
 
 export const useCart = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ export const useCart = () => {
 
   const addToCart = async (productId, quantity = 1) => {
     if (!user._id) {
-      alert('Please login to add items to cart');
+      toast.error('Please login to add items to cart');
       return false;
     }
 
@@ -41,17 +42,17 @@ export const useCart = () => {
       });
 
       if (response.data.success) {
-        alert('Product added to cart');
+        toast.success('Product added to cart!');
         // Refresh cart items to get updated data
         fetchCartItems();
         return true;
       } else {
-        alert(response.data.message || 'Failed to add to cart');
+        toast.error(response.data.message || 'Failed to add to cart');
         return false;
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
-      alert(error.response?.data?.message || 'Failed to add to cart');
+      toast.error(error.response?.data?.message || 'Failed to add to cart');
       return false;
     }
   };
@@ -65,15 +66,15 @@ export const useCart = () => {
 
       if (response.data.success) {
         dispatch(updateCartItem({ cartItemId, quantity }));
-        alert('Cart updated');
+        toast.success('Cart updated successfully!');
         return true;
       } else {
-        alert(response.data.message || 'Failed to update cart');
+        toast.error(response.data.message || 'Failed to update cart');
         return false;
       }
     } catch (error) {
       console.error('Error updating cart:', error);
-      alert(error.response?.data?.message || 'Failed to update cart');
+      toast.error(error.response?.data?.message || 'Failed to update cart');
       return false;
     }
   };
@@ -87,15 +88,14 @@ export const useCart = () => {
 
       if (response.data.success) {
         dispatch(removeCartItem(cartItemId));
-        alert('Item removed from cart');
         return true;
       } else {
-        alert(response.data.message || 'Failed to remove item');
+        toast.error(response.data.message || 'Failed to remove item');
         return false;
       }
     } catch (error) {
       console.error('Error removing from cart:', error);
-      alert(error.response?.data?.message || 'Failed to remove item');
+      toast.error(error.response?.data?.message || 'Failed to remove item');
       return false;
     }
   };
@@ -108,15 +108,14 @@ export const useCart = () => {
 
       if (response.data.success) {
         dispatch(clearCart());
-        alert('Cart cleared');
         return true;
       } else {
-        alert(response.data.message || 'Failed to clear cart');
+        toast.error(response.data.message || 'Failed to clear cart');
         return false;
       }
     } catch (error) {
       console.error('Error clearing cart:', error);
-      alert(error.response?.data?.message || 'Failed to clear cart');
+      toast.error(error.response?.data?.message || 'Failed to clear cart');
       return false;
     }
   };

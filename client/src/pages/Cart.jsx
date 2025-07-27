@@ -11,6 +11,7 @@ import {
 import { useCart } from '../hooks/useCart';
 import useAuth from '../hooks/useAuth';
 import { formatPrice, calculateDiscountedPrice } from '../utils/currency';
+import toast from 'react-hot-toast';
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -23,21 +24,70 @@ const Cart = () => {
     }
   }, [isLoggedIn, navigate]);
 
-  const handleQuantityChange = (cartItemId, newQuantity) => {
+  const handleQuantityChange = async (cartItemId, newQuantity) => {
     if (newQuantity < 1) return;
-    updateQuantity(cartItemId, newQuantity);
-  };
-
-  const handleRemoveItem = (cartItemId) => {
-    if (window.confirm('Are you sure you want to remove this item from cart?')) {
-      removeItem(cartItemId);
+    
+    const success = await updateQuantity(cartItemId, newQuantity);
+    if (!success) {
+      // The error toast is already shown in the useCart hook
+      // We could add additional handling here if needed
     }
   };
 
-  const handleClearCart = () => {
-    if (window.confirm('Are you sure you want to clear your entire cart?')) {
-      clearCartItems();
-    }
+  const handleRemoveItem = async (cartItemId) => {
+    toast((t) => (
+      <div className="flex flex-col space-y-3">
+        <span>Are you sure you want to remove this item from cart?</span>
+        <div className="flex space-x-2">
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded text-sm"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              const success = await removeItem(cartItemId);
+              if (success) {
+                toast.success('Item removed from cart!');
+              }
+            }}
+          >
+            Remove
+          </button>
+          <button
+            className="bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: Infinity });
+  };
+
+  const handleClearCart = async () => {
+    toast((t) => (
+      <div className="flex flex-col space-y-3">
+        <span>Are you sure you want to clear your entire cart?</span>
+        <div className="flex space-x-2">
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded text-sm"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              const success = await clearCartItems();
+              if (success) {
+                toast.success('Cart cleared successfully!');
+              }
+            }}
+          >
+            Clear Cart
+          </button>
+          <button
+            className="bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: Infinity });
   };
 
   if (loading) {

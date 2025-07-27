@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
-  FaHeart, 
   FaEye, 
   FaFilter, 
   FaStar,
@@ -13,18 +12,21 @@ import {
   FaTh,
   FaHome,
   FaChevronRight,
-  FaShoppingCart
+  FaShoppingCart,
+  FaCheck
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import { useCart } from '../hooks/useCart';
 import { formatPrice, calculateDiscountedPrice } from '../utils/currency';
+import ProductCard from '../components/ProductCard';
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
+  const cart = useSelector(state => state.cart);
   const { addToCart } = useCart();
   
   // Get URL parameters
@@ -51,6 +53,11 @@ const Shop = () => {
     totalProducts: 0
   });
   const [priceRange, setPriceRange] = useState([0, 1000]);
+
+  // Helper function to check if product is in cart
+  const getCartItem = (productId) => {
+    return cart.items.find(item => item.productId?._id === productId);
+  };
 
   // Update filters when URL parameters change
   useEffect(() => {
@@ -183,195 +190,6 @@ const Shop = () => {
     });
     setPriceRange([0, 1000]);
   };
-
-  const ProductCard = ({ product }) => (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-      <div className="relative overflow-hidden">
-        <Link to={`/product/${product._id}`}>
-          <img
-            src={product.image?.[0] || '/placeholder-image.jpg'}
-            alt={product.name}
-            className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        </Link>
-        {product.discount > 0 && (
-          <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-full text-sm font-medium">
-            -{product.discount}%
-          </div>
-        )}
-        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="flex flex-col space-y-2">
-            <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors">
-              <FaHeart className="w-4 h-4 text-gray-600 hover:text-red-500" />
-            </button>
-            <Link 
-              to={`/product/${product._id}`}
-              className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
-            >
-              <FaEye className="w-4 h-4 text-gray-600 hover:text-blue-500" />
-            </Link>
-          </div>
-        </div>
-      </div>
-      <div className="p-4">
-        <div className="flex flex-wrap gap-1 mb-2">
-          {product.category?.slice(0, 2).map((cat, index) => (
-            <span
-              key={cat._id || index}
-              className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full"
-            >
-              {cat.name}
-            </span>
-          ))}
-        </div>
-        <Link to={`/product/${product._id}`}>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
-            {product.name}
-          </h3>
-        </Link>
-        <div className="flex items-center mb-2">
-          <div className="flex text-yellow-400">
-            {[...Array(5)].map((_, i) => (
-              <FaStar key={i} className="w-4 h-4" />
-            ))}
-          </div>
-          <span className="text-sm text-gray-500 ml-2">(4.5)</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            {product.discount > 0 ? (
-              <>
-                <span className="text-xl font-bold text-blue-600">
-                  {formatPrice(calculateDiscountedPrice(product.price, product.discount))}
-                </span>
-                <span className="text-sm text-gray-500 line-through">
-                  {formatPrice(product.price)}
-                </span>
-              </>
-            ) : (
-              <span className="text-xl font-bold text-blue-600">
-                {formatPrice(product.price)}
-              </span>
-            )}
-          </div>
-          <span className="text-sm text-gray-500">
-            Stock: {product.stock || 0}
-          </span>
-        </div>
-        <div className="mt-3">
-          <button
-            onClick={() => addToCart(product._id)}
-            disabled={product.stock === 0}
-            className={`w-full py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 ${
-              product.stock === 0
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
-            }`}
-          >
-            <FaShoppingCart className="w-4 h-4" />
-            <span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  const ProductListItem = ({ product }) => (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-      <div className="flex">
-        <div className="relative w-48 h-32">
-          <Link to={`/product/${product._id}`}>
-            <img
-              src={product.image?.[0] || '/placeholder-image.jpg'}
-              alt={product.name}
-              className="w-full h-full object-cover"
-            />
-          </Link>
-          {product.discount > 0 && (
-            <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-              -{product.discount}%
-            </div>
-          )}
-        </div>
-        <div className="flex-1 p-4">
-          <div className="flex justify-between">
-            <div className="flex-1">
-              <div className="flex flex-wrap gap-1 mb-2">
-                {product.category?.slice(0, 3).map((cat, index) => (
-                  <span
-                    key={cat._id || index}
-                    className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full"
-                  >
-                    {cat.name}
-                  </span>
-                ))}
-              </div>
-              <Link to={`/product/${product._id}`}>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
-                  {product.name}
-                </h3>
-              </Link>
-              <div className="flex items-center mb-2">
-                <div className="flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} className="w-4 h-4" />
-                  ))}
-                </div>
-                <span className="text-sm text-gray-500 ml-2">(4.5)</span>
-              </div>
-              <p className="text-gray-600 text-sm line-clamp-2 mb-3">
-                {product.description || 'No description available'}
-              </p>
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  {product.discount > 0 ? (
-                    <>
-                      <span className="text-2xl font-bold text-blue-600">
-                        {formatPrice(calculateDiscountedPrice(product.price, product.discount))}
-                      </span>
-                      <span className="text-lg text-gray-500 line-through">
-                        {formatPrice(product.price)}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-2xl font-bold text-blue-600">
-                      {formatPrice(product.price)}
-                    </span>
-                  )}
-                </div>
-                <span className="text-sm text-gray-500">
-                  Stock: {product.stock || 0}
-                </span>
-                <button
-                  onClick={() => addToCart(product._id)}
-                  disabled={product.stock === 0}
-                  className={`py-2 px-4 rounded-lg font-medium transition-colors flex items-center space-x-2 ${
-                    product.stock === 0
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }`}
-                >
-                  <FaShoppingCart className="w-4 h-4" />
-                  <span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
-                </button>
-              </div>
-            </div>
-            <div className="flex flex-col items-center space-y-2 ml-4">
-              <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors">
-                <FaHeart className="w-4 h-4 text-gray-600 hover:text-red-500" />
-              </button>
-              <Link 
-                to={`/product/${product._id}`}
-                className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-              >
-                <FaEye className="w-4 h-4 text-gray-600 hover:text-blue-500" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -567,9 +385,11 @@ const Shop = () => {
                   : "space-y-6"
               }>
                 {products.map(product => (
-                  viewMode === 'grid' 
-                    ? <ProductCard key={product._id} product={product} />
-                    : <ProductListItem key={product._id} product={product} />
+                  <ProductCard 
+                    key={product._id} 
+                    product={product} 
+                    variant={viewMode === 'grid' ? 'grid' : 'list'}
+                  />
                 ))}
               </div>
             )}

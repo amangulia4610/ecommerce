@@ -1,7 +1,8 @@
 import Search from './Search.jsx';
 import UserMenu from './UserMenu.jsx';
-import { useNavigate } from 'react-router-dom';
-import { FaShoppingCart } from 'react-icons/fa';
+import { useNavigate, Link } from 'react-router-dom';
+import { FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa';
+import { useState } from 'react';
 import useAuth from '../hooks/useAuth.js';
 import { useCart } from '../hooks/useCart.js';
 
@@ -9,6 +10,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
   const { totalItems } = useCart();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogoClick = () => {
     navigate('/');
@@ -23,75 +25,101 @@ const Header = () => {
   };
 
   return (
-    <header className='shadow-lg bg-white border-b border-gray-200'>
-      {/* Desktop Layout - 768px and above */}
-      <div className="hidden md:flex h-20 items-center justify-between px-6">
-        {/* Logo */}
-        <div className="flex items-center">
-          <h1 
-            className="text-gray-900 text-2xl font-bold cursor-pointer hover:text-blue-600 transition-colors" 
-            style={{ fontFamily: "'Optima', 'Inter', 'Roboto', Arial, sans-serif" }}
-            onClick={handleLogoClick}
-          >
-            20 Degrees
-          </h1>
-        </div>
-
-        {/* Center Search */}
-        <div className="flex-1 flex justify-center mx-8">
-          <Search />
-        </div>
-
-        {/* Right side - Cart and User */}
-        <div className="flex items-center space-x-4">
-          {/* Cart */}
-          <button 
-            className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors"
-            onClick={handleCartClick}
-          >
-            <FaShoppingCart className="w-6 h-6" />
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </button>
-          
-          {/* Login/User */}
-          {isLoggedIn ? (
-            <UserMenu />
-          ) : (
-            <button 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-              onClick={handleLoginClick}
-            >
-              Login
-            </button>
-          )}
+    <header className='shadow-lg bg-white border-b border-gray-200 sticky top-0 z-50'>
+      {/* Top Bar - Desktop Only */}
+      <div className="hidden lg:block bg-gray-50 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 py-2">
+          <div className="flex justify-between items-center text-sm text-gray-600">
+            <div className="flex items-center space-x-4">
+              <span>📞 +1 (555) 123-4567</span>
+              <span>✉️ support@20degrees.com</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span>🚚 Free shipping on orders over $10</span>
+              <span>🔒 Secure checkout</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Layout - Below 768px */}
-      <div className="md:hidden px-6 py-4">
-        {/* First Row - Logo, Cart and Login */}
-        <div className="flex items-center justify-between mb-4">
-          <h1 
-            className="text-gray-900 text-2xl font-bold cursor-pointer hover:text-blue-600 transition-colors" 
-            style={{ fontFamily: "'Optima', 'Inter', 'Roboto', Arial, sans-serif" }}
-            onClick={handleLogoClick}
-          >
-            20 Degrees
-          </h1>
-          
+      {/* Main Header */}
+      <div className="max-w-7xl mx-auto">
+        {/* Desktop Layout - 1024px and above */}
+        <div className="hidden lg:flex h-20 items-center justify-between px-6">
+          {/* Logo */}
+          <div className="flex items-center">
+            <div 
+              className="text-gray-900 text-3xl font-bold cursor-pointer hover:text-blue-600 transition-colors flex items-center space-x-2" 
+              style={{ fontFamily: "'Optima', 'Inter', 'Roboto', Arial, sans-serif" }}
+              onClick={handleLogoClick}
+            >
+                            <span>20 Degrees</span>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="flex-1 flex justify-center mx-8 max-w-lg">
+            <Search />
+          </div>
+
+          {/* Right side - Cart and User */}
+          <div className="flex items-center space-x-6">
+            {/* Cart */}
+            <button 
+              className="relative p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200 group hover:shadow-lg"
+              onClick={handleCartClick}
+            >
+              <FaShoppingCart className="w-6 h-6 group-hover:scale-110 transition-transform" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-semibold shadow-lg animate-pulse">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+            
+            {/* Login/User */}
+            {isLoggedIn ? (
+              <UserMenu />
+            ) : (
+              <button 
+                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105"
+                onClick={handleLoginClick}
+              >
+                Login
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Tablet Layout - 768px to 1024px */}
+        <div className="hidden md:flex lg:hidden h-18 items-center justify-between px-6 py-3">
+          {/* Logo */}
+          <div className="flex items-center">
+            <div 
+              className="text-gray-900 text-2xl font-bold cursor-pointer hover:text-blue-600 transition-colors flex items-center space-x-2" 
+              style={{ fontFamily: "'Optima', 'Inter', 'Roboto', Arial, sans-serif" }}
+              onClick={handleLogoClick}
+            >
+              <span className="text-blue-600">🌡️</span>
+              <span>20 Degrees</span>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="flex-1 flex justify-center mx-6 max-w-md">
+            <Search />
+          </div>
+
+          {/* Right side */}
           <div className="flex items-center space-x-4">
             {/* Cart */}
             <button 
-              className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors"
+              className="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200 hover:shadow-lg"
               onClick={handleCartClick}
             >
               <FaShoppingCart className="w-6 h-6" />
               {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold shadow-lg">
                   {totalItems}
                 </span>
               )}
@@ -111,9 +139,73 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Second Row - Search */}
-        <div className="flex justify-center">
-          <Search />
+        {/* Mobile Layout - Below 768px */}
+        <div className="md:hidden">
+          {/* First Row - Logo, Mobile Menu Toggle */}
+          <div className="flex items-center justify-between px-6 py-4">
+            <div 
+              className="text-gray-900 text-xl font-bold cursor-pointer hover:text-blue-600 transition-colors flex items-center space-x-2" 
+              style={{ fontFamily: "'Optima', 'Inter', 'Roboto', Arial, sans-serif" }}
+              onClick={handleLogoClick}
+            >
+              <span className="text-blue-600">🌡️</span>
+              <span>20 Degrees</span>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              {/* Cart */}
+              <button 
+                className="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200 hover:shadow-lg"
+                onClick={handleCartClick}
+              >
+                <FaShoppingCart className="w-6 h-6" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold shadow-lg">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
+              
+              {/* Mobile Menu Toggle */}
+              <button
+                className="p-2 text-gray-600 hover:text-blue-600 transition-colors"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Second Row - Search */}
+          <div className="px-6 pb-4">
+            <Search />
+          </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="border-t border-gray-200 bg-white">
+              <div className="px-6 py-4 space-y-4">
+                {/* User Actions */}
+                <div>
+                  {isLoggedIn ? (
+                    <div className="space-y-3">
+                      <UserMenu />
+                    </div>
+                  ) : (
+                    <button 
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-full font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+                      onClick={() => {
+                        handleLoginClick();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      Login
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
