@@ -17,6 +17,7 @@ import {
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
+import { formatPrice } from '../utils/currency';
 
 const ProductManagement = () => {
   const navigate = useNavigate();
@@ -1001,7 +1002,7 @@ const ProductManagement = () => {
                 
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xl font-bold text-purple-600">
-                    ${product.price}
+                    {formatPrice(product.price)}
                   </span>
                   {product.discount > 0 && (
                     <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded">

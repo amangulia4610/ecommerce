@@ -11,6 +11,7 @@ import {
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
+import { formatPrice } from '../utils/currency';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -101,13 +102,6 @@ const Orders = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
-  };
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR'
-    }).format(price);
   };
 
   const handleFilterChange = (key, value) => {

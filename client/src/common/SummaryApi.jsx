@@ -98,6 +98,28 @@ const SummaryApi = {
         method: "PATCH"
     },
     
+    // Cart APIs
+    addToCart: {
+        url: "/api/cart/add-to-cart",
+        method: "POST"
+    },
+    getCartItems: {
+        url: "/api/cart/get-cart-items",
+        method: "GET"
+    },
+    updateCartQuantity: {
+        url: "/api/cart/update-quantity",
+        method: "PUT"
+    },
+    removeFromCart: {
+        url: "/api/cart/remove-from-cart",
+        method: "DELETE"
+    },
+    clearCart: {
+        url: "/api/cart/clear-cart",
+        method: "DELETE"
+    },
+    
     // Order APIs
     getUserOrders: {
         url: "/api/order/user-orders",

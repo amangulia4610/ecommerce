@@ -12,16 +12,20 @@ import {
   FaList,
   FaTh,
   FaHome,
-  FaChevronRight
+  FaChevronRight,
+  FaShoppingCart
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
+import { useCart } from '../hooks/useCart';
+import { formatPrice, calculateDiscountedPrice } from '../utils/currency';
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
+  const { addToCart } = useCart();
   
   // Get URL parameters
   const urlSearchQuery = searchParams.get('q') || '';
@@ -180,18 +184,6 @@ const Shop = () => {
     setPriceRange([0, 1000]);
   };
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(price);
-  };
-
-  const calculateDiscountedPrice = (price, discount) => {
-    if (!discount || discount === 0) return price;
-    return price - (price * discount / 100);
-  };
-
   const ProductCard = ({ product }) => (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
       <div className="relative overflow-hidden">
@@ -266,6 +258,20 @@ const Shop = () => {
             Stock: {product.stock || 0}
           </span>
         </div>
+        <div className="mt-3">
+          <button
+            onClick={() => addToCart(product._id)}
+            disabled={product.stock === 0}
+            className={`w-full py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 ${
+              product.stock === 0
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
+          >
+            <FaShoppingCart className="w-4 h-4" />
+            <span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -336,6 +342,18 @@ const Shop = () => {
                 <span className="text-sm text-gray-500">
                   Stock: {product.stock || 0}
                 </span>
+                <button
+                  onClick={() => addToCart(product._id)}
+                  disabled={product.stock === 0}
+                  className={`py-2 px-4 rounded-lg font-medium transition-colors flex items-center space-x-2 ${
+                    product.stock === 0
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
+                >
+                  <FaShoppingCart className="w-4 h-4" />
+                  <span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+                </button>
               </div>
             </div>
             <div className="flex flex-col items-center space-y-2 ml-4">

@@ -3,6 +3,7 @@ import App from "../App";
 import Home from "../pages/Home";
 import Shop from "../pages/Shop";
 import ProductDetails from "../pages/ProductDetails";
+import Cart from "../pages/Cart";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ForgotPassword from "../pages/ForgotPassword";
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/product/:productId",
         element: <ProductDetails />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
       },
             {
         path: "/login",

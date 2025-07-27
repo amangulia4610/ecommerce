@@ -9,6 +9,7 @@ import connectDB from './config/connectDB.js'
 import userRouter from './route/user.route.js'
 import categoryRouter from './route/category.route.js'
 import productRouter from './route/product.route.js'
+import cartRouter from './route/cart.route.js'
 import userAdminRouter from './route/user.admin.route.js'
 import addressRouter from './route/address.route.js'
 import orderRouter from './route/order.route.js'
@@ -37,6 +38,7 @@ app.get("/",(request,response)=>{
 app.use('/api/user',userRouter)
 app.use('/api/category',categoryRouter)
 app.use('/api/product',productRouter)
+app.use('/api/cart',cartRouter)
 app.use('/api/user-admin',userAdminRouter)
 app.use('/api/address',addressRouter)
 app.use('/api/order',orderRouter)

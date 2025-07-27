@@ -19,6 +19,7 @@ import {
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
+import { formatPrice } from '../utils/currency';
 
 const OrderManagement = () => {
   const navigate = useNavigate();
@@ -265,7 +266,7 @@ const OrderManagement = () => {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
                 <p className="text-2xl font-bold text-green-600">
-                  ${orderStats.totalRevenue?.toFixed(2) || '0.00'}
+                  {formatPrice(orderStats.totalRevenue || 0)}
                 </p>
               </div>
             </div>
@@ -279,7 +280,7 @@ const OrderManagement = () => {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Average Order</p>
                 <p className="text-2xl font-bold text-purple-600">
-                  ${orderStats.averageOrderValue?.toFixed(2) || '0.00'}
+                  {formatPrice(orderStats.averageOrderValue || 0)}
                 </p>
               </div>
             </div>
@@ -406,10 +407,10 @@ const OrderManagement = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">
-                          ${order.totalAmt?.toFixed(2) || '0.00'}
+                          {formatPrice(order.totalAmt || 0)}
                         </div>
                         <div className="text-sm text-gray-500">
-                          Subtotal: ${order.subTotalAmt?.toFixed(2) || '0.00'}
+                          Subtotal: {formatPrice(order.subTotalAmt || 0)}
                         </div>
                       </div>
                     </td>
@@ -544,7 +545,7 @@ const OrderManagement = () => {
                           {selectedOrder.productId?.name || selectedOrder.product_details?.name || 'N/A'}
                         </p>
                         <p className="text-sm text-gray-600">
-                          Price: ${selectedOrder.productId?.price || 'N/A'}
+                          Price: {selectedOrder.productId?.price ? formatPrice(selectedOrder.productId.price) : 'N/A'}
                         </p>
                       </div>
                     </div>
@@ -625,11 +626,11 @@ const OrderManagement = () => {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Subtotal:</span>
-                        <span className="text-gray-900">${selectedOrder.subTotalAmt?.toFixed(2) || '0.00'}</span>
+                        <span className="text-gray-900">{formatPrice(selectedOrder.subTotalAmt || 0)}</span>
                       </div>
                       <div className="flex justify-between border-t pt-2">
                         <span className="font-medium text-gray-900">Total:</span>
-                        <span className="font-medium text-gray-900">${selectedOrder.totalAmt?.toFixed(2) || '0.00'}</span>
+                        <span className="font-medium text-gray-900">{formatPrice(selectedOrder.totalAmt || 0)}</span>
                       </div>
                     </div>
                   </div>

@@ -15,6 +15,7 @@ import {
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
+import { formatPrice } from '../utils/currency';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -80,7 +81,7 @@ const AdminDashboard = () => {
     },
     {
       title: 'Total Revenue',
-      value: `$${stats.orders.totalRevenue?.toFixed(2) || '0.00'}`,
+      value: formatPrice(stats.orders.totalRevenue || 0),
       icon: FaDollarSign,
       color: 'bg-green-500',
       textColor: 'text-green-600'

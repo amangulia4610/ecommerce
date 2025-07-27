@@ -11,16 +11,20 @@ import {
   FaShare,
   FaShieldAlt,
   FaTruck,
-  FaUndo
+  FaUndo,
+  FaShoppingCart
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
+import { useCart } from '../hooks/useCart';
+import { formatPrice, calculateDiscountedPrice } from '../utils/currency';
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
+  const { addToCart } = useCart();
   
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -81,15 +85,6 @@ const ProductDetails = () => {
     }
   };
 
-  const formatPrice = (price) => {
-    return `₹${price.toFixed(2)}`;
-  };
-
-  const calculateDiscountedPrice = (price, discount) => {
-    if (!discount || discount === 0) return price;
-    return price - (price * discount / 100);
-  };
-
   const increaseQuantity = () => {
     if (quantity < product.stock) {
       setQuantity(quantity + 1);
@@ -99,6 +94,14 @@ const ProductDetails = () => {
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    const success = await addToCart(product._id, quantity);
+    if (success) {
+      // Optionally reset quantity to 1 after adding
+      setQuantity(1);
     }
   };
 
@@ -272,6 +275,14 @@ const ProductDetails = () => {
                 </div>
 
                 <div className="flex space-x-4">
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <FaShoppingCart className="w-5 h-5" />
+                    <span>Add to Cart</span>
+                  </button>
+                  
                   <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                     <FaHeart className="w-5 h-5 text-gray-600" />
                   </button>
@@ -345,7 +356,7 @@ const ProductDetails = () => {
                     <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
                       {relatedProduct.name}
                     </h3>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
                         {relatedProduct.discount > 0 ? (
                           <>
@@ -363,6 +374,21 @@ const ProductDetails = () => {
                         )}
                       </div>
                     </div>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        addToCart(relatedProduct._id);
+                      }}
+                      disabled={relatedProduct.stock === 0}
+                      className={`w-full py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2 ${
+                        relatedProduct.stock === 0
+                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          : 'bg-blue-600 text-white hover:bg-blue-700'
+                      }`}
+                    >
+                      <FaShoppingCart className="w-4 h-4" />
+                      <span>{relatedProduct.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+                    </button>
                   </div>
                 </Link>
               ))}

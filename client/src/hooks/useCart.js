@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
-import { setCartItems, setCartLoading } from '../store/cartSlice';
+import { setCartItems, setCartLoading, addCartItem, updateCartItem, removeCartItem, clearCart } from '../store/cartSlice';
 
 export const useCart = () => {
   const dispatch = useDispatch();
@@ -28,6 +28,99 @@ export const useCart = () => {
     }
   };
 
+  const addToCart = async (productId, quantity = 1) => {
+    if (!user._id) {
+      alert('Please login to add items to cart');
+      return false;
+    }
+
+    try {
+      const response = await Axios({
+        ...SummaryApi.addToCart,
+        data: { productId, quantity }
+      });
+
+      if (response.data.success) {
+        alert('Product added to cart');
+        // Refresh cart items to get updated data
+        fetchCartItems();
+        return true;
+      } else {
+        alert(response.data.message || 'Failed to add to cart');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert(error.response?.data?.message || 'Failed to add to cart');
+      return false;
+    }
+  };
+
+  const updateQuantity = async (cartItemId, quantity) => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.updateCartQuantity,
+        data: { cartItemId, quantity }
+      });
+
+      if (response.data.success) {
+        dispatch(updateCartItem({ cartItemId, quantity }));
+        alert('Cart updated');
+        return true;
+      } else {
+        alert(response.data.message || 'Failed to update cart');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error updating cart:', error);
+      alert(error.response?.data?.message || 'Failed to update cart');
+      return false;
+    }
+  };
+
+  const removeItem = async (cartItemId) => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.removeFromCart,
+        url: `${SummaryApi.removeFromCart.url}/${cartItemId}`
+      });
+
+      if (response.data.success) {
+        dispatch(removeCartItem(cartItemId));
+        alert('Item removed from cart');
+        return true;
+      } else {
+        alert(response.data.message || 'Failed to remove item');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      alert(error.response?.data?.message || 'Failed to remove item');
+      return false;
+    }
+  };
+
+  const clearCartItems = async () => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.clearCart
+      });
+
+      if (response.data.success) {
+        dispatch(clearCart());
+        alert('Cart cleared');
+        return true;
+      } else {
+        alert(response.data.message || 'Failed to clear cart');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+      alert(error.response?.data?.message || 'Failed to clear cart');
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (user._id) {
       fetchCartItems();
@@ -36,6 +129,10 @@ export const useCart = () => {
 
   return {
     ...cart,
-    fetchCartItems
+    fetchCartItems,
+    addToCart,
+    updateQuantity,
+    removeItem,
+    clearCartItems
   };
 };

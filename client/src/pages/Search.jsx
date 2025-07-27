@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
+import { formatPrice, calculateDiscountedPrice } from '../utils/currency';
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -155,18 +156,6 @@ const Search = () => {
       page: 1,
       limit: 12
     });
-  };
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(price);
-  };
-
-  const calculateDiscountedPrice = (price, discount) => {
-    if (!discount || discount === 0) return price;
-    return price - (price * discount / 100);
   };
 
   const ProductCard = ({ product }) => (

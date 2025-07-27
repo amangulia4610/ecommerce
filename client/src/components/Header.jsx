@@ -1,11 +1,14 @@
-import Search from './search.jsx';
+import Search from './Search.jsx';
 import UserMenu from './UserMenu.jsx';
 import { useNavigate } from 'react-router-dom';
+import { FaShoppingCart } from 'react-icons/fa';
 import useAuth from '../hooks/useAuth.js';
+import { useCart } from '../hooks/useCart.js';
 
 const Header = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
+  const { totalItems } = useCart();
 
   const handleLogoClick = () => {
     navigate('/');
@@ -13,6 +16,10 @@ const Header = () => {
 
   const handleLoginClick = () => {
     navigate('/login');
+  };
+
+  const handleCartClick = () => {
+    navigate('/cart');
   };
 
   return (
@@ -35,8 +42,21 @@ const Header = () => {
           <Search />
         </div>
 
-        {/* Right side - User */}
+        {/* Right side - Cart and User */}
         <div className="flex items-center space-x-4">
+          {/* Cart */}
+          <button 
+            className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors"
+            onClick={handleCartClick}
+          >
+            <FaShoppingCart className="w-6 h-6" />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
+          </button>
+          
           {/* Login/User */}
           {isLoggedIn ? (
             <UserMenu />
@@ -64,6 +84,19 @@ const Header = () => {
           </h1>
           
           <div className="flex items-center space-x-4">
+            {/* Cart */}
+            <button 
+              className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors"
+              onClick={handleCartClick}
+            >
+              <FaShoppingCart className="w-6 h-6" />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+            
             {/* Login/User */}
             {isLoggedIn ? (
               <UserMenu />

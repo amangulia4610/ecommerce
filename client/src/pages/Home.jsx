@@ -11,13 +11,17 @@ import {
   FaCreditCard,
   FaPlay,
   FaChevronLeft,
-  FaChevronRight
+  FaChevronRight,
+  FaShoppingCart
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
+import { useCart } from '../hooks/useCart';
+import { formatPrice, calculateDiscountedPrice } from '../utils/currency';
 
 const Home = () => {
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -62,18 +66,6 @@ const Home = () => {
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
-  };
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(price);
-  };
-
-  const calculateDiscountedPrice = (price, discount) => {
-    if (!discount || discount === 0) return price;
-    return price - (price * discount / 100);
   };
 
   const heroSlides = [
@@ -177,6 +169,13 @@ const Home = () => {
               </span>
             )}
           </div>
+          <button
+            onClick={() => addToCart(product._id)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-1 text-sm font-medium"
+          >
+            <FaShoppingCart className="w-4 h-4" />
+            <span>Add to Cart</span>
+          </button>
         </div>
       </div>
     </div>
