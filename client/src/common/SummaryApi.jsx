@@ -121,6 +121,10 @@ const SummaryApi = {
     },
     
     // Order APIs
+    createOrder: {
+        url: "/api/order/create-order",
+        method: "POST"
+    },
     getUserOrders: {
         url: "/api/order/user-orders",
         method: "GET"

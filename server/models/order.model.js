@@ -24,7 +24,21 @@ const orderSchema = new mongoose.Schema({
     },
     payment_status : {
         type : String,
-        default : ""
+        default : "pending"
+    },
+    delivery_status : {
+        type : String,
+        enum : ['Placed', 'In Transit', 'Delivered'],
+        default : 'Placed'
+    },
+    payment_method : {
+        type : String,
+        enum : ['COD', 'Online'],
+        default : 'COD'
+    },
+    quantity : {
+        type : Number,
+        default : 1
     },
     delivery_address : {
         type : mongoose.Schema.ObjectId,

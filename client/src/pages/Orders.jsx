@@ -21,7 +21,7 @@ const Orders = () => {
   const [filters, setFilters] = useState({
     page: 1,
     limit: 10,
-    payment_status: '',
+    delivery_status: '',
     sortBy: 'createdAt',
     sortOrder: 'desc'
   });
@@ -62,13 +62,11 @@ const Orders = () => {
 
   const getStatusIcon = (status) => {
     switch (status?.toLowerCase()) {
-      case 'completed':
       case 'delivered':
         return <FaCheckCircle className="text-green-500" />;
-      case 'pending':
+      case 'placed':
         return <FaClock className="text-yellow-500" />;
-      case 'processing':
-      case 'shipped':
+      case 'in transit':
         return <FaTruck className="text-blue-500" />;
       case 'cancelled':
         return <FaTimesCircle className="text-red-500" />;
@@ -79,13 +77,11 @@ const Orders = () => {
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
-      case 'completed':
       case 'delivered':
         return 'bg-green-100 text-green-800';
-      case 'pending':
+      case 'placed':
         return 'bg-yellow-100 text-yellow-800';
-      case 'processing':
-      case 'shipped':
+      case 'in transit':
         return 'bg-blue-100 text-blue-800';
       case 'cancelled':
         return 'bg-red-100 text-red-800';
@@ -154,14 +150,24 @@ const Orders = () => {
             </div>
             
             <select
-              value={filters.payment_status}
+              value={filters.delivery_status}
+              onChange={(e) => handleFilterChange('delivery_status', e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Delivery Status</option>
+              <option value="Placed">Placed</option>
+              <option value="In Transit">In Transit</option>
+              <option value="Delivered">Delivered</option>
+            </select>
+
+            <select
+              value={filters.payment_status || ''}
               onChange={(e) => handleFilterChange('payment_status', e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">All Statuses</option>
+              <option value="">All Payment Status</option>
               <option value="pending">Pending</option>
               <option value="completed">Completed</option>
-              <option value="processing">Processing</option>
               <option value="cancelled">Cancelled</option>
             </select>
 
@@ -208,16 +214,21 @@ const Orders = () => {
                   <div className="flex-1">
                     <div className="flex items-center space-x-4 mb-4">
                       <div className="flex items-center space-x-2">
-                        {getStatusIcon(order.payment_status)}
+                        {getStatusIcon(order.delivery_status || order.payment_status)}
                         <div>
                           <p className="font-semibold text-gray-900">Order #{order.orderId}</p>
                           <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
                         </div>
                       </div>
                       
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.payment_status)}`}>
-                        {order.payment_status?.toUpperCase() || 'PENDING'}
-                      </span>
+                      <div className="flex flex-col space-y-1">
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.delivery_status || 'placed')}`}>
+                          {order.delivery_status || 'Placed'}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          Payment: {order.payment_status || 'pending'}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Product Details */}
@@ -235,8 +246,13 @@ const Orders = () => {
                             {order.product_details?.name || order.productId.name}
                           </p>
                           <p className="text-sm text-gray-500">
-                            Subtotal: {formatPrice(order.subTotalAmt)}
+                            Qty: {order.quantity || 1} • Subtotal: {formatPrice(order.subTotalAmt)}
                           </p>
+                          {order.payment_method && (
+                            <p className="text-xs text-gray-400">
+                              Payment: {order.payment_method}
+                            </p>
+                          )}
                         </div>
                       </div>
                     )}

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  createOrderController,
   getOrdersController,
   getOrderController,
   updateOrderStatusController,
@@ -12,6 +13,7 @@ import auth from '../middleware/auth.js';
 const orderRouter = Router();
 
 // User routes
+orderRouter.post('/create-order', auth, createOrderController);
 orderRouter.get('/user-orders', auth, getUserOrdersController);
 
 // Admin routes

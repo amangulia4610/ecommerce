@@ -45,6 +45,7 @@ const OrderManagement = () => {
 
   const [statusUpdate, setStatusUpdate] = useState({
     payment_status: '',
+    delivery_status: '',
     paymentId: '',
     invoice_receipt: ''
   });
@@ -120,6 +121,7 @@ const OrderManagement = () => {
         setSelectedOrder(response.data.data);
         setStatusUpdate({
           payment_status: response.data.data.payment_status || '',
+          delivery_status: response.data.data.delivery_status || '',
           paymentId: response.data.data.paymentId || '',
           invoice_receipt: response.data.data.invoice_receipt || ''
         });
@@ -401,6 +403,9 @@ const OrderManagement = () => {
                           <div className="text-sm font-medium text-gray-900">
                             {order.productId?.name || order.product_details?.name || 'N/A'}
                           </div>
+                          <div className="text-sm text-gray-500">
+                            Qty: {order.quantity || 1}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -502,10 +507,20 @@ const OrderManagement = () => {
                         <p className="text-gray-900">{selectedOrder.paymentId || 'N/A'}</p>
                       </div>
                       <div>
-                        <span className="font-medium text-gray-700">Status:</span>
+                        <span className="font-medium text-gray-700">Payment Status:</span>
                         <p className={`font-medium ${getStatusColor(selectedOrder.payment_status).includes('green') ? 'text-green-600' : getStatusColor(selectedOrder.payment_status).includes('yellow') ? 'text-yellow-600' : getStatusColor(selectedOrder.payment_status).includes('red') ? 'text-red-600' : 'text-gray-600'}`}>
                           {selectedOrder.payment_status || 'Pending'}
                         </p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-700">Delivery Status:</span>
+                        <p className={`font-medium ${getStatusColor(selectedOrder.delivery_status || 'placed')}`}>
+                          {selectedOrder.delivery_status || 'Placed'}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-700">Payment Method:</span>
+                        <p className="text-gray-900">{selectedOrder.payment_method || 'COD'}</p>
                       </div>
                     </div>
                   </div>
@@ -576,6 +591,25 @@ const OrderManagement = () => {
                         <option value="failed">Failed</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="refunded">Refunded</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Delivery Status
+                      </label>
+                      <select
+                        value={statusUpdate.delivery_status}
+                        onChange={(e) => setStatusUpdate(prev => ({
+                          ...prev,
+                          delivery_status: e.target.value
+                        }))}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-orange-500 focus:border-orange-500"
+                      >
+                        <option value="">Select Delivery Status</option>
+                        <option value="Placed">Placed</option>
+                        <option value="In Transit">In Transit</option>
+                        <option value="Delivered">Delivered</option>
                       </select>
                     </div>
 

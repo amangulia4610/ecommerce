@@ -1,4 +1,121 @@
 import OrderModel from "../models/order.model.js";
+import CartProductModel from "../models/cartProduct.model.js";
+import ProductModel from "../models/product.model.js";
+
+// Create new order (checkout)
+export async function createOrderController(req, res) {
+  try {
+    const userId = req.userId;
+    const { 
+      delivery_address,
+      payment_method = 'COD',
+      items // array of {productId, quantity} if not using cart
+    } = req.body;
+
+    if (!delivery_address) {
+      return res.status(400).json({
+        message: "Delivery address is required",
+        error: true,
+        success: false,
+      });
+    }
+
+    let orderItems = [];
+
+    if (items && items.length > 0) {
+      // Direct checkout with specific items
+      orderItems = items;
+    } else {
+      // Checkout from cart
+      const cartItems = await CartProductModel.find({ userId }).populate('productId');
+      
+      if (!cartItems || cartItems.length === 0) {
+        return res.status(400).json({
+          message: "No items in cart",
+          error: true,
+          success: false,
+        });
+      }
+
+      orderItems = cartItems.map(item => ({
+        productId: item.productId._id,
+        quantity: item.quantity,
+        product: item.productId
+      }));
+    }
+
+    const orders = [];
+
+    for (const item of orderItems) {
+      const product = item.product || await ProductModel.findById(item.productId);
+      
+      if (!product) {
+        return res.status(404).json({
+          message: `Product not found`,
+          error: true,
+          success: false,
+        });
+      }
+
+      if (product.stock < item.quantity) {
+        return res.status(400).json({
+          message: `Insufficient stock for ${product.name}`,
+          error: true,
+          success: false,
+        });
+      }
+
+      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const subTotalAmt = product.price * item.quantity;
+      const totalAmt = subTotalAmt; // Can add shipping, tax later
+
+      const order = new OrderModel({
+        userId,
+        orderId,
+        productId: product._id,
+        product_details: {
+          name: product.name,
+          image: product.image,
+        },
+        delivery_address,
+        subTotalAmt,
+        totalAmt,
+        payment_method,
+        quantity: item.quantity,
+        payment_status: payment_method === 'COD' ? 'pending' : 'pending',
+        delivery_status: 'Placed'
+      });
+
+      const savedOrder = await order.save();
+      orders.push(savedOrder);
+
+      // Update product stock
+      await ProductModel.findByIdAndUpdate(
+        product._id,
+        { $inc: { stock: -item.quantity } }
+      );
+    }
+
+    // Clear cart if checkout from cart
+    if (!items || items.length === 0) {
+      await CartProductModel.deleteMany({ userId });
+    }
+
+    return res.status(201).json({
+      message: "Order placed successfully",
+      error: false,
+      success: true,
+      data: orders,
+    });
+  } catch (error) {
+    console.error("Error in createOrderController:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: true,
+      success: false,
+    });
+  }
+}
 
 // Get user's orders
 export async function getUserOrdersController(req, res) {
@@ -8,6 +125,7 @@ export async function getUserOrdersController(req, res) {
       page = 1,
       limit = 10,
       payment_status,
+      delivery_status,
       startDate,
       endDate,
       sortBy = 'createdAt',
@@ -17,6 +135,7 @@ export async function getUserOrdersController(req, res) {
     const filter = { userId };
 
     if (payment_status) filter.payment_status = payment_status;
+    if (delivery_status) filter.delivery_status = delivery_status;
     
     if (startDate || endDate) {
       filter.createdAt = {};
@@ -69,6 +188,7 @@ export async function getOrdersController(req, res) {
       limit = 10,
       userId,
       payment_status,
+      delivery_status,
       startDate,
       endDate,
       search,
@@ -80,6 +200,7 @@ export async function getOrdersController(req, res) {
 
     if (userId) filter.userId = userId;
     if (payment_status) filter.payment_status = payment_status;
+    if (delivery_status) filter.delivery_status = delivery_status;
     if (search) filter.orderId = { $regex: search, $options: 'i' };
     
     if (startDate || endDate) {
@@ -182,7 +303,7 @@ export async function getOrderController(req, res) {
 export async function updateOrderStatusController(req, res) {
   try {
     const { id } = req.params;
-    const { payment_status, paymentId, invoice_receipt } = req.body;
+    const { payment_status, delivery_status, paymentId, invoice_receipt } = req.body;
 
     const order = await OrderModel.findById(id);
 
@@ -196,6 +317,7 @@ export async function updateOrderStatusController(req, res) {
 
     const updateData = {};
     if (payment_status) updateData.payment_status = payment_status;
+    if (delivery_status) updateData.delivery_status = delivery_status;
     if (paymentId) updateData.paymentId = paymentId;
     if (invoice_receipt) updateData.invoice_receipt = invoice_receipt;
 

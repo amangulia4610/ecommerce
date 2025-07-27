@@ -279,7 +279,10 @@ const Cart = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2">
+                <button 
+                  onClick={() => navigate('/checkout')}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+                >
                   <FaCreditCard className="w-5 h-5" />
                   <span>Proceed to Checkout</span>
                 </button>
