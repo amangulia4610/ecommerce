@@ -5,7 +5,7 @@ import {
   FaShippingFast,
   FaShieldAlt,
   FaHeadset,
-  FaCreditCard,
+  FaStar,
   FaPlay,
   FaChevronLeft,
   FaChevronRight,
@@ -22,7 +22,12 @@ import {
   FaClock as FaWatch,
   FaFlask,
   FaHeartbeat,
-  FaRunning
+  FaRunning,
+  FaPercent,
+  FaTags,
+  FaBolt,
+  FaEye,
+  FaShoppingCart
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
@@ -82,7 +87,7 @@ const Home = () => {
       const response = await Axios({
         ...SummaryApi.getProducts,
         params: {
-          limit: 6,
+          limit: 8,
           publish: 'true',
           sortBy: 'createdAt',
           sortOrder: 'desc'
@@ -102,7 +107,7 @@ const Home = () => {
       const response = await Axios({
         ...SummaryApi.getProducts,
         params: {
-          limit: 6,
+          limit: 8,
           publish: 'true',
           sortBy: 'stock',
           sortOrder: 'asc' // Lower stock suggests higher sales
@@ -154,31 +159,37 @@ const Home = () => {
 
   const heroSlides = [
     {
-      title: "Transform Your Health Journey",
-      subtitle: "Premium Health & Fitness Solutions",
-      description: "Discover cutting-edge health monitors, premium multivitamins, and fitness trackers designed for your optimal wellness",
-      buttonText: "Explore Health Tech",
+      title: "Premium Health & Wellness",
+      subtitle: "Transform Your Lifestyle",
+      description: "Discover cutting-edge health technology, premium supplements, and fitness solutions for the modern wellness enthusiast",
+      buttonText: "Explore Collection",
+      secondaryText: "Watch Demo",
       image: "/apple-watch.png",
-      bgColor: "from-blue-600 via-purple-600 to-indigo-700",
-      category: "Smartwatches"
+      bgColor: "from-slate-900 via-purple-900 to-slate-900",
+      category: "Smartwatches",
+      offer: "Up to 40% Off"
     },
     {
-      title: "Fuel Your Performance",
-      subtitle: "Premium Nutrition & Supplements",
-      description: "Power your workouts with our scientifically-formulated protein powders and essential multivitamins",
+      title: "Science-Backed Nutrition",
+      subtitle: "Fuel Your Performance",
+      description: "Premium protein powders and multivitamins formulated by nutritionists for optimal health and performance",
       buttonText: "Shop Nutrition",
+      secondaryText: "Learn More",
       image: "/protien.png",
-      bgColor: "from-green-600 via-teal-600 to-cyan-700",
-      category: "Protein Powders"
+      bgColor: "from-emerald-900 via-teal-900 to-emerald-900",
+      category: "Supplements",
+      offer: "Buy 2 Get 1 Free"
     },
     {
       title: "Advanced Health Monitoring",
-      subtitle: "Real-time Health Insights",
-      description: "Stay ahead of your health with continuous glucose monitors, smartwatches, and professional health services",
+      subtitle: "Your Health, Simplified",
+      description: "Professional-grade health monitors and fitness trackers for real-time insights into your wellness journey",
       buttonText: "Monitor Health",
+      secondaryText: "View Features",
       image: "/fitbit inspire 3.png",
-      bgColor: "from-purple-600 via-pink-600 to-red-600",
-      category: "Fitness Bands"
+      bgColor: "from-indigo-900 via-blue-900 to-indigo-900",
+      category: "Health Tech",
+      offer: "Free Shipping"
     }
   ];
 
@@ -196,54 +207,65 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="relative h-[700px] overflow-hidden">
-        <div className="absolute inset-0 flex transition-transform duration-500 ease-in-out"
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section - Modern Luxury Design */}
+      <section className="relative h-[80vh] overflow-hidden bg-black">
+        <div className="absolute inset-0 flex transition-transform duration-700 ease-out"
              style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
           {heroSlides.map((slide, index) => (
             <div key={index} className={`min-w-full h-full bg-gradient-to-r ${slide.bgColor} flex items-center relative overflow-hidden`}>
-              {/* Background Pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.3),transparent)]"></div>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.2),transparent)]"></div>
-              </div>
+              {/* Modern overlay pattern */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/40"></div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(120,119,198,0.3),transparent)]"></div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.1),transparent)]"></div>
               
-              <div className="max-w-7xl mx-auto px-4 py-20 flex items-center justify-between relative z-10">
+              <div className="max-w-7xl mx-auto px-6 py-16 flex items-center justify-between relative z-10">
                 <div className="max-w-2xl text-white">
-                  <div className="inline-flex items-center px-4 py-2 bg-transparent bg-opacity-15 rounded-full text-sm font-medium mb-6 backdrop-blur-md border border-white border-opacity-30 shadow-lg">
-                    <FaFire className="mr-2 text-yellow-300" />
-                    <span className="text-white font-semibold">{slide.subtitle}</span>
+                  {/* Premium badge */}
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full text-sm font-medium mb-6 border border-white/20">
+                    <FaTags className="text-yellow-400" />
+                    <span>{slide.offer}</span>
+                    <div className="w-1 h-1 bg-white/60 rounded-full"></div>
+                    <span className="text-yellow-400">{slide.subtitle}</span>
                   </div>
-                  <h1 className="text-6xl font-bold mb-6 leading-tight text-white drop-shadow-lg">
+                  
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-[1.1] tracking-tight">
                     {slide.title}
                   </h1>
-                  <p className="text-xl mb-8 text-white opacity-95 leading-relaxed drop-shadow-md">{slide.description}</p>
+                  
+                  <p className="text-xl text-gray-300 mb-8 leading-relaxed max-w-lg">
+                    {slide.description}
+                  </p>
+                  
                   <div className="flex flex-col sm:flex-row gap-4">
                     <button 
                       onClick={() => navigate('/shop')}
-                      className="bg-white text-gray-900 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 inline-flex items-center justify-center space-x-2 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+                      className="group bg-white text-black px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:shadow-white/25 flex items-center justify-center gap-3"
                     >
                       <span>{slide.buttonText}</span>
-                      <FaArrowRight className="transition-transform group-hover:translate-x-1" />
+                      <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                     </button>
                     <button 
                       onClick={() => navigate('/shop')}
-                      className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-gray-900 transition-all duration-300 inline-flex items-center justify-center space-x-2 backdrop-blur-sm"
+                      className="group border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center justify-center gap-3"
                     >
                       <FaPlay className="text-sm" />
-                      <span>Watch Demo</span>
+                      <span>{slide.secondaryText}</span>
                     </button>
                   </div>
                 </div>
-                <div className="hidden xl:block relative">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-white bg-opacity-20 rounded-3xl blur-3xl transform rotate-6"></div>
-                    <img 
-                      src={slide.image} 
-                      alt={slide.title}
-                      className="w-96 h-96 object-contain relative z-10 drop-shadow-2xl"
-                    />
+                
+                {/* Product showcase */}
+                <div className="hidden lg:block relative">
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-3xl blur-3xl transform rotate-6 group-hover:rotate-12 transition-transform duration-500"></div>
+                    <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
+                      <img 
+                        src={slide.image} 
+                        alt={slide.title}
+                        className="w-80 h-80 object-contain drop-shadow-2xl transform group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -251,176 +273,151 @@ const Home = () => {
           ))}
         </div>
         
-        {/* Navigation Buttons (desktop only) */}
-        <div className="hidden md:block">
-          <button 
-            onClick={prevSlide}
-            className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-transparent bg-opacity-20 hover:bg-opacity-30 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm border border-white border-opacity-30 hover:border-opacity-50 shadow-lg hover:shadow-xl hover:scale-105"
-          >
-            <FaChevronLeft className="w-4 h-4" />
-          </button>
-          <button 
-            onClick={nextSlide}
-            className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-transparent bg-opacity-20 hover:bg-opacity-30 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm border border-white border-opacity-30 hover:border-opacity-50 shadow-lg hover:shadow-xl hover:scale-105"
-          >
-            <FaChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Indicators */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        {/* Navigation */}
+        <div className="absolute inset-x-0 bottom-8 flex justify-center gap-3 z-20">
           {heroSlides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              className={`w-12 h-1.5 rounded-full transition-all duration-300 ${
                 index === currentSlide 
-                  ? 'bg-white shadow-lg scale-110' 
-                  : 'bg-white bg-opacity-40 hover:bg-opacity-70 hover:scale-105'
+                  ? 'bg-white shadow-lg' 
+                  : 'bg-white/30 hover:bg-white/50'
               }`}
             />
           ))}
         </div>
+        
+        {/* Arrow navigation */}
+        <button 
+          onClick={prevSlide}
+          className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 z-20"
+        >
+          <FaChevronLeft />
+        </button>
+        <button 
+          onClick={nextSlide}
+          className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 z-20"
+        >
+          <FaChevronRight />
+        </button>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-gradient-to-r from-gray-50 to-gray-100 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent)]"></div>
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Trusted by Health Enthusiasts Worldwide</h2>
-            <p className="text-xl text-gray-600">Join thousands who've transformed their health journey with us</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center group">
-              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2">
-                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <FaTrophy className="w-8 h-8 text-blue-600" />
+      {/* Quick Stats - Modern Cards */}
+      <section className="relative -mt-20 z-10 pb-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { icon: FaTrophy, label: "Premium Products", value: `${stats.totalProducts}+`, color: "blue" },
+              { icon: FaUsers, label: "Happy Customers", value: `${stats.totalCustomers.toLocaleString()}+`, color: "green" },
+              { icon: FaChartLine, label: "Orders Delivered", value: `${stats.totalOrders.toLocaleString()}+`, color: "purple" },
+              { icon: FaAward, label: "Health Categories", value: `${stats.totalCategories}+`, color: "orange" }
+            ].map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
+                <div key={index} className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 group">
+                  <div className={`w-12 h-12 bg-${stat.color}-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <IconComponent className={`w-6 h-6 text-${stat.color}-600`} />
+                  </div>
+                  <div className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</div>
+                  <div className="text-sm text-gray-600 font-medium">{stat.label}</div>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-2">{stats.totalProducts}+</h3>
-                <p className="text-gray-600 font-medium">Premium Products</p>
-              </div>
-            </div>
-            <div className="text-center group">
-              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2">
-                <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <FaUsers className="w-8 h-8 text-green-600" />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-2">{stats.totalCustomers.toLocaleString()}+</h3>
-                <p className="text-gray-600 font-medium">Happy Customers</p>
-              </div>
-            </div>
-            <div className="text-center group">
-              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2">
-                <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <FaChartLine className="w-8 h-8 text-purple-600" />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-2">{stats.totalOrders.toLocaleString()}+</h3>
-                <p className="text-gray-600 font-medium">Orders Delivered</p>
-              </div>
-            </div>
-            <div className="text-center group">
-              <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-2">
-                <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <FaAward className="w-8 h-8 text-orange-600" />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-2">{stats.totalCategories}+</h3>
-                <p className="text-gray-600 font-medium">Health Categories</p>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium mb-4">
-              <FaLeaf className="mr-2" />
-              Shop by Category
-            </div>
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">Comprehensive Health Solutions</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">From advanced health monitoring to premium nutrition, find everything you need for your wellness journey</p>
+      {/* Categories Section - Modern Grid */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Shop by Category</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">Explore our curated collection of premium health and wellness products</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map((category, index) => {
               const categoryConfig = {
                 'Smartwatches': { 
-                  icon: FaClock, 
-                  bgColor: 'bg-blue-100', 
-                  iconColor: 'text-blue-600',
-                  hoverColor: 'group-hover:text-blue-600',
-                  description: 'Advanced fitness tracking & health monitoring' 
+                  icon: FaWatch, 
+                  gradient: 'from-blue-500 to-cyan-500',
+                  bgPattern: 'bg-gradient-to-br from-blue-50 to-cyan-50',
+                  description: 'Advanced fitness tracking & health monitoring',
+                  products: '25+ Products'
                 },
                 'Fitness Bands': { 
                   icon: FaRunning, 
-                  bgColor: 'bg-green-100', 
-                  iconColor: 'text-green-600',
-                  hoverColor: 'group-hover:text-green-600',
-                  description: 'Lightweight tracking for active lifestyles' 
+                  gradient: 'from-green-500 to-emerald-500',
+                  bgPattern: 'bg-gradient-to-br from-green-50 to-emerald-50',
+                  description: 'Lightweight tracking for active lifestyles',
+                  products: '18+ Products'
                 },
                 'Health Monitors': { 
                   icon: FaHeartbeat, 
-                  bgColor: 'bg-red-100', 
-                  iconColor: 'text-red-600',
-                  hoverColor: 'group-hover:text-red-600',
-                  description: 'Professional health monitoring devices' 
+                  gradient: 'from-red-500 to-pink-500',
+                  bgPattern: 'bg-gradient-to-br from-red-50 to-pink-50',
+                  description: 'Professional health monitoring devices',
+                  products: '12+ Products'
                 },
                 'Multivitamins': { 
                   icon: FaFlask, 
-                  bgColor: 'bg-purple-100', 
-                  iconColor: 'text-purple-600',
-                  hoverColor: 'group-hover:text-purple-600',
-                  description: 'Essential nutrients for optimal health' 
+                  gradient: 'from-purple-500 to-violet-500',
+                  bgPattern: 'bg-gradient-to-br from-purple-50 to-violet-50',
+                  description: 'Essential nutrients for optimal health',
+                  products: '30+ Products'
                 },
                 'Protein Powders': { 
                   icon: FaDumbbell, 
-                  bgColor: 'bg-orange-100', 
-                  iconColor: 'text-orange-600',
-                  hoverColor: 'group-hover:text-orange-600',
-                  description: 'Premium nutrition for peak performance' 
+                  gradient: 'from-orange-500 to-amber-500',
+                  bgPattern: 'bg-gradient-to-br from-orange-50 to-amber-50',
+                  description: 'Premium nutrition for peak performance',
+                  products: '20+ Products'
                 },
                 'Health Services': { 
                   icon: FaHeart, 
-                  bgColor: 'bg-pink-100', 
-                  iconColor: 'text-pink-600',
-                  hoverColor: 'group-hover:text-pink-600',
-                  description: 'Professional health consultation services' 
+                  gradient: 'from-pink-500 to-rose-500',
+                  bgPattern: 'bg-gradient-to-br from-pink-50 to-rose-50',
+                  description: 'Professional health consultation services',
+                  products: '8+ Services'
                 }
               };
               
               const config = categoryConfig[category.name] || { 
                 icon: FaHeart, 
-                bgColor: 'bg-gray-100', 
-                iconColor: 'text-gray-600',
-                hoverColor: 'group-hover:text-gray-600',
-                description: 'Health and wellness products' 
+                gradient: 'from-gray-500 to-slate-500',
+                bgPattern: 'bg-gradient-to-br from-gray-50 to-slate-50',
+                description: 'Health and wellness products',
+                products: '10+ Products'
               };
+              
               const IconComponent = config.icon;
               
               return (
                 <Link
                   key={category._id}
                   to={`/shop?category=${category._id}`}
-                  className="group relative bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-blue-200"
+                  className="group relative overflow-hidden rounded-2xl bg-white border border-gray-200 hover:border-gray-300 transition-all duration-500 hover:shadow-2xl hover:-translate-y-1"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="relative z-10">
-                    <div className={`${config.bgColor} w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                      <IconComponent className={`w-8 h-8 ${config.iconColor}`} />
+                  <div className={`absolute inset-0 ${config.bgPattern} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
+                  
+                  <div className="relative p-8">
+                    <div className="flex items-start justify-between mb-6">
+                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${config.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        <IconComponent className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-medium text-gray-500">{config.products}</div>
+                        <FaArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all duration-300 ml-auto mt-1" />
+                      </div>
                     </div>
-                    <h3 className={`text-2xl font-bold text-gray-900 mb-3 ${config.hoverColor} transition-colors`}>
+                    
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-gray-700">
                       {category.name}
                     </h3>
-                    <p className="text-gray-600 mb-6 group-hover:text-gray-700 transition-colors">
+                    <p className="text-gray-600 group-hover:text-gray-700 leading-relaxed">
                       {config.description}
                     </p>
-                    <div className="flex items-center text-blue-600 font-semibold group-hover:text-blue-700">
-                      <span className="mr-2">Explore Products</span>
-                      <FaArrowRight className="transition-transform group-hover:translate-x-1" />
-                    </div>
                   </div>
                 </Link>
               );
@@ -429,246 +426,233 @@ const Home = () => {
         </div>
       </section>
 
-      {/* New Arrivals Section */}
-      <section className="py-20 bg-gradient-to-r from-gray-50 to-blue-50">
-        <div className="max-w-7xl mx-auto px-4">
+      {/* Trending Now Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <div className="inline-flex items-center px-4 py-2 bg-green-100 text-green-600 rounded-full text-sm font-medium mb-4">
-                <FaClock className="mr-2" />
-                Just Launched
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                <span className="text-red-600 font-semibold text-sm uppercase tracking-wide">Trending Now</span>
               </div>
-              <h2 className="text-5xl font-bold text-gray-900 mb-4">Latest Arrivals</h2>
-              <p className="text-xl text-gray-600">Discover the newest additions to our health & wellness collection</p>
-            </div>
-            <Link 
-              to="/shop?sort=newest"
-              className="hidden md:inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-            >
-              View All New
-              <FaArrowRight className="ml-2" />
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {newArrivals.slice(0, 6).map(product => (
-              <div key={product._id} className="group relative">
-                <div className="absolute -top-3 -right-3 z-10">
-                  <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
-                    New
-                  </span>
-                </div>
-                <ProductCard product={product} variant="grid" />
-              </div>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12 md:hidden">
-            <Link
-              to="/shop?sort=newest"
-              className="inline-flex items-center px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
-            >
-              View All New Products
-              <FaArrowRight className="ml-2" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Best Sellers Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between mb-12">
-            <div>
-              <div className="inline-flex items-center px-4 py-2 bg-orange-100 text-orange-600 rounded-full text-sm font-medium mb-4">
-                <FaFire className="mr-2" />
-                Trending Now
-              </div>
-              <h2 className="text-5xl font-bold text-gray-900 mb-4">Best Sellers</h2>
-              <p className="text-xl text-gray-600">Most popular products loved by our customers</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Best Sellers</h2>
+              <p className="text-lg text-gray-600">Most loved products by our community</p>
             </div>
             <Link 
               to="/shop?sort=popular"
-              className="hidden md:inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-xl font-semibold hover:bg-orange-700 transition-colors"
+              className="hidden md:flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
             >
-              View All Popular
-              <FaArrowRight className="ml-2" />
+              View All
+              <FaArrowRight />
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {bestSellers.slice(0, 6).map((product, index) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {bestSellers.slice(0, 8).map((product, index) => (
               <div key={product._id} className="group relative">
-                <div className="absolute -top-3 -left-3 z-10">
-                  <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center">
-                    <FaTrophy className="mr-1 text-xs" />
+                <div className="absolute -top-2 -left-2 z-10">
+                  <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                    <FaTrophy className="text-xs" />
                     #{index + 1}
-                  </span>
+                  </div>
                 </div>
                 <ProductCard product={product} variant="grid" />
               </div>
             ))}
           </div>
-          
-          <div className="text-center mt-12 md:hidden">
-            <Link
-              to="/shop?sort=popular"
-              className="inline-flex items-center px-8 py-4 bg-orange-600 text-white rounded-xl font-semibold hover:bg-orange-700 transition-colors"
+        </div>
+      </section>
+
+      {/* New Arrivals Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <FaBolt className="text-green-500" />
+                <span className="text-green-600 font-semibold text-sm uppercase tracking-wide">Just Launched</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">New Arrivals</h2>
+              <p className="text-lg text-gray-600">Latest additions to our premium collection</p>
+            </div>
+            <Link 
+              to="/shop?sort=newest"
+              className="hidden md:flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors"
             >
-              View All Best Sellers
-              <FaArrowRight className="ml-2" />
+              Explore New
+              <FaArrowRight />
             </Link>
           </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {newArrivals.slice(0, 8).map(product => (
+              <div key={product._id} className="group relative">
+                <div className="absolute -top-2 -right-2 z-10">
+                  <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                    New
+                  </div>
+                </div>
+                <ProductCard product={product} variant="grid" />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-700 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.1),transparent)]"></div>
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
+      {/* Premium Features Section */}
+      <section className="py-16 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(59,130,246,0.3),transparent)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(139,92,246,0.3),transparent)]"></div>
+        
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-white mb-6">Why Choose 20 Degrees?</h2>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto">We're committed to providing the best health and wellness experience with premium products and exceptional service</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Why Choose 20 Degrees?</h2>
+            <p className="text-xl text-blue-100 max-w-2xl mx-auto">Experience premium service with every order</p>
           </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center group">
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <FaShippingFast className="w-10 h-10" />
-              </div>
-              <h3 className="text-2xl font-semibold text-white mb-4">Free Shipping</h3>
-              <p className="text-blue-100">Free shipping on orders over $100 CAD with express delivery options</p>
-            </div>
-            <div className="text-center group">
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <FaShieldAlt className="w-10 h-10" />
-              </div>
-              <h3 className="text-2xl font-semibold text-white mb-4">Secure Payment</h3>
-              <p className="text-blue-100">100% secure payment processing with encryption and fraud protection</p>
-            </div>
-            <div className="text-center group">
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <FaHeadset className="w-10 h-10" />
-              </div>
-              <h3 className="text-2xl font-semibold text-white mb-4">Expert Support</h3>
-              <p className="text-blue-100">24/7 health and fitness expert support to guide your wellness journey</p>
-            </div>
-            <div className="text-center group">
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <FaGift className="w-10 h-10" />
-              </div>
-              <h3 className="text-2xl font-semibold text-white mb-4">Health Rewards</h3>
-              <p className="text-blue-100">Earn points on every purchase and unlock exclusive health benefits</p>
-            </div>
+            {[
+              {
+                icon: FaShippingFast,
+                title: "Free Express Shipping",
+                description: "Free shipping on orders over $100 CAD with same-day delivery in major cities",
+                color: "blue"
+              },
+              {
+                icon: FaShieldAlt,
+                title: "Secure & Safe",
+                description: "Bank-level security with 256-bit SSL encryption and fraud protection",
+                color: "green"
+              },
+              {
+                icon: FaHeadset,
+                title: "24/7 Expert Support",
+                description: "Health professionals available round the clock for guidance",
+                color: "purple"
+              },
+              {
+                icon: FaGift,
+                title: "Rewards Program",
+                description: "Earn points on every purchase and unlock exclusive member benefits",
+                color: "orange"
+              }
+            ].map((feature, index) => {
+              const IconComponent = feature.icon;
+              return (
+                <div key={index} className="group text-center">
+                  <div className="relative mb-6">
+                    <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300 border border-white/20">
+                      <IconComponent className="w-10 h-10 text-white" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-4">{feature.title}</h3>
+                  <p className="text-blue-100 leading-relaxed">{feature.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="py-20 bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.15),transparent)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(255,255,255,0.12),transparent)]"></div>
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <div className="inline-flex items-center px-4 py-2 bg-opacity-20 rounded-full text-teal-100 text-sm font-medium mb-6 backdrop-blur-sm border border-white border-opacity-30 shadow-lg">
-            <FaGift className="mr-2 text-yellow-300" />
-            Exclusive Health Tips & Offers
+      {/* Newsletter CTA Section */}
+      <section className="py-16 bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.1),transparent)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(255,255,255,0.1),transparent)]"></div>
+        
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-6 border border-white/20">
+            <FaGift className="text-yellow-300" />
+            <span>Exclusive Offers</span>
+            <div className="w-1 h-1 bg-white/60 rounded-full"></div>
+            <span className="text-yellow-300">Health Tips</span>
           </div>
-          <h2 className="text-5xl font-bold text-white mb-6 drop-shadow-lg">Stay Updated on Your Health Journey</h2>
-          <p className="text-xl text-teal-100 mb-8 leading-relaxed">
-            Join our wellness community and get <span className="font-bold text-yellow-200">15% off</span> your first order, plus exclusive health tips, 
-            product recommendations, and early access to new arrivals
+          
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            Join Our Wellness Community
+          </h2>
+          <p className="text-xl text-white/90 mb-8 leading-relaxed">
+            Get <span className="font-bold text-yellow-300">15% off</span> your first order plus exclusive health tips, 
+            product launches, and member-only discounts
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto mb-8">
+          
+          <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto mb-6">
             <input
               type="email"
-              placeholder="Enter your email for health updates"
-              className="flex-1 px-6 py-4 rounded-xl border border-white text-white placeholder:text-teal-200 bg-transparent focus:outline-none focus:ring-2 focus:ring-teal-300 transition-colors"
+              placeholder="Enter your email address"
+              className="flex-1 px-6 py-4 rounded-xl border-0 text-gray-900 placeholder:text-gray-500 bg-white/95 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-white/30 transition-all"
             />
-            <button className="bg-teal-500 text-white px-8 py-4 rounded-xl font-semibold hover:blue-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl">
-              <span>Get 15% Off</span>
-              <FaArrowRight className="ml-2" />
+            <button className="bg-white text-gray-900 px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition-colors shadow-xl hover:shadow-2xl">
+              Get 15% Off
             </button>
           </div>
-          <p className="text-teal-100 text-sm">
-            🔒 We respect your privacy. Unsubscribe at any time.
+          
+          <p className="text-white/80 text-sm flex items-center justify-center gap-2">
+            <FaShieldAlt className="text-green-300" />
+            We respect your privacy. Unsubscribe anytime.
           </p>
         </div>
       </section>
+
+      {/* Brand Story Section */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="order-2 lg:order-1">
-              <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium mb-6">
-                <FaHeart className="mr-2" />
-                Our Mission
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-sm font-medium mb-6">
+                <FaHeart />
+                <span>Our Mission</span>
               </div>
-              <h2 className="text-5xl font-bold text-gray-900 mb-8 leading-tight">
+              
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">
                 Empowering Your <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Health Revolution</span>
               </h2>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                At 20 Degrees, we believe that optimal health is the foundation of a fulfilling life. 
-                We curate the finest health monitoring devices, premium supplements, and fitness technology 
-                to help you achieve your wellness goals.
+              
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                At 20 Degrees, we believe optimal health is the foundation of a fulfilling life. 
+                We curate premium health technology, supplements, and wellness solutions to help you achieve your goals.
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                    <FaHeartbeat className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Premium Quality</h4>
-                    <p className="text-gray-600 text-sm">Carefully selected products from trusted health and fitness brands</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                    <FaFlask className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Science-Backed</h4>
-                    <p className="text-gray-600 text-sm">Evidence-based products that deliver real health benefits</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                    <FaUsers className="w-4 h-4 text-purple-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Expert Support</h4>
-                    <p className="text-gray-600 text-sm">Health professionals available to guide your journey</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                    <FaAward className="w-4 h-4 text-orange-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Trusted Results</h4>
-                    <p className="text-gray-600 text-sm">Thousands of satisfied customers transforming their health</p>
-                  </div>
-                </div>
+                {[
+                  { icon: FaHeartbeat, title: "Premium Quality", desc: "Carefully curated from trusted brands" },
+                  { icon: FaFlask, title: "Science-Backed", desc: "Evidence-based health solutions" },
+                  { icon: FaUsers, title: "Expert Support", desc: "Health professionals at your service" },
+                  { icon: FaAward, title: "Proven Results", desc: "Thousands of success stories" }
+                ].map((item, index) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <div key={index} className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <IconComponent className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900 mb-1">{item.title}</h4>
+                        <p className="text-gray-600 text-sm">{item.desc}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link 
                   to="/shop"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-colors"
                 >
                   Start Your Journey
-                  <FaArrowRight className="ml-2" />
+                  <FaArrowRight />
                 </Link>
-                <button className="inline-flex items-center justify-center px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:border-gray-400 hover:bg-gray-50 transition-colors">
-                  <FaPlay className="mr-2" />
+                <button className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-bold hover:border-gray-400 hover:bg-gray-50 transition-colors">
+                  <FaPlay />
                   Watch Our Story
                 </button>
               </div>
             </div>
             
-            <div className="order-1 lg:order-2 relative">
+            <div className="relative">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl transform rotate-6"></div>
-                <div className="relative bg-white rounded-3xl p-8 shadow-2xl">
+                <div className="relative bg-white rounded-3xl p-8 shadow-2xl border border-gray-100">
                   <img
                     src="/20-degrees-weight-management-app.png"
                     alt="20 Degrees Health & Wellness"

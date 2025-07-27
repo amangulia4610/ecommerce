@@ -248,13 +248,13 @@ const ProductCard = ({
 
   // Default grid variant
   return (
-    <div className={`bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group h-[480px] flex flex-col ${className}`}>
+    <div className={`bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group h-[420px] flex flex-col ${className}`}>
       <div className="relative overflow-hidden flex-shrink-0">
         <Link to={`/product/${product._id}`}>
           <img
             src={product.image?.[0] || '/placeholder-image.jpg'}
             alt={product.name}
-            className="w-full h-56 object-contain group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-48 object-contain group-hover:scale-105 transition-transform duration-300"
           />
         </Link>
         {product.discount > 0 && (
@@ -265,7 +265,7 @@ const ProductCard = ({
       </div>
       <div className="p-4 flex flex-col flex-1">
         <div className="flex flex-wrap gap-1 mb-2">
-          {product.category?.slice(0, 2).map((cat, index) => (
+          {product.category?.slice(0, 1).map((cat, index) => (
             <span
               key={cat._id || index}
               className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full"
@@ -275,7 +275,7 @@ const ProductCard = ({
           ))}
         </div>
         <Link to={`/product/${product._id}`}>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors min-h-[3rem]">
+          <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors min-h-[3rem]">
             {product.name}
           </h3>
         </Link>
