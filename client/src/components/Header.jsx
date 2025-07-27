@@ -49,11 +49,14 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div 
-              className="text-gray-900 text-3xl font-bold cursor-pointer hover:text-blue-600 transition-colors flex items-center space-x-2" 
-              style={{ fontFamily: "'Optima', 'Inter', 'Roboto', Arial, sans-serif" }}
+              className="cursor-pointer hover:opacity-80 transition-opacity flex items-center space-x-2" 
               onClick={handleLogoClick}
             >
-                            <span>20 Degrees</span>
+              <img 
+                src="/logo.png" 
+                alt="20 Degrees" 
+                className="h-12 w-auto"
+              />
             </div>
           </div>
 
@@ -96,12 +99,14 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div 
-              className="text-gray-900 text-2xl font-bold cursor-pointer hover:text-blue-600 transition-colors flex items-center space-x-2" 
-              style={{ fontFamily: "'Optima', 'Inter', 'Roboto', Arial, sans-serif" }}
+              className="cursor-pointer hover:opacity-80 transition-opacity flex items-center space-x-2" 
               onClick={handleLogoClick}
             >
-              <span className="text-blue-600">🌡️</span>
-              <span>20 Degrees</span>
+              <img 
+                src="/logo.png" 
+                alt="20 Degrees" 
+                className="h-10 w-auto"
+              />
             </div>
           </div>
 
@@ -144,12 +149,14 @@ const Header = () => {
           {/* First Row - Logo, Mobile Menu Toggle */}
           <div className="flex items-center justify-between px-6 py-4">
             <div 
-              className="text-gray-900 text-xl font-bold cursor-pointer hover:text-blue-600 transition-colors flex items-center space-x-2" 
-              style={{ fontFamily: "'Optima', 'Inter', 'Roboto', Arial, sans-serif" }}
+              className="cursor-pointer hover:opacity-80 transition-opacity flex items-center space-x-2" 
               onClick={handleLogoClick}
             >
-              <span className="text-blue-600">🌡️</span>
-              <span>20 Degrees</span>
+              <img 
+                src="/logo.png" 
+                alt="20 Degrees" 
+                className="h-8 w-auto"
+              />
             </div>
             
             <div className="flex items-center space-x-3">

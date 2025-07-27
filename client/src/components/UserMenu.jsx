@@ -7,7 +7,8 @@ import {
   FaCog,
   FaTimes,
   FaCheck,
-  FaExclamationTriangle
+  FaExclamationTriangle,
+  FaChevronDown
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
@@ -88,6 +89,7 @@ const UserMenu = () => {
           )}
         </div>
         <span className="hidden md:block font-medium text-gray-700">{user.name}</span>
+        <FaChevronDown className={`hidden md:block w-3 h-3 text-gray-500 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Dropdown Menu */}

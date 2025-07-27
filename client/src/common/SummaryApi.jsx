@@ -129,6 +129,10 @@ const SummaryApi = {
         url: "/api/order/user-orders",
         method: "GET"
     },
+    getUserOrder: {
+        url: "/api/order/user-order",
+        method: "GET"
+    },
     getOrders: {
         url: "/api/order/get-orders",
         method: "GET"

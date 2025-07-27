@@ -3,6 +3,7 @@ import {
   createOrderController,
   getOrdersController,
   getOrderController,
+  getUserOrderController,
   updateOrderStatusController,
   deleteOrderController,
   getOrderStatsController,
@@ -15,6 +16,7 @@ const orderRouter = Router();
 // User routes
 orderRouter.post('/create-order', auth, createOrderController);
 orderRouter.get('/user-orders', auth, getUserOrdersController);
+orderRouter.get('/user-order/:id', auth, getUserOrderController);
 
 // Admin routes
 orderRouter.get('/get-orders', auth, getOrdersController);

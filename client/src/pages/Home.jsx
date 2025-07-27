@@ -160,25 +160,25 @@ const Home = () => {
       buttonText: "Explore Health Tech",
       image: "/apple-watch.png",
       bgColor: "from-blue-600 via-purple-600 to-indigo-700",
-      category: "smartwatches"
+      category: "Smartwatches"
     },
     {
       title: "Fuel Your Performance",
       subtitle: "Premium Nutrition & Supplements",
       description: "Power your workouts with our scientifically-formulated protein powders and essential multivitamins",
       buttonText: "Shop Nutrition",
-      image: "/fitbit inspire 3.png",
+      image: "/protien.png",
       bgColor: "from-green-600 via-teal-600 to-cyan-700",
-      category: "nutrition"
+      category: "Protein Powders"
     },
     {
       title: "Advanced Health Monitoring",
       subtitle: "Real-time Health Insights",
       description: "Stay ahead of your health with continuous glucose monitors, smartwatches, and professional health services",
       buttonText: "Monitor Health",
-      image: "/fitbitcharge6.jpg",
+      image: "/fitbit inspire 3.png",
       bgColor: "from-purple-600 via-pink-600 to-red-600",
-      category: "health-monitors"
+      category: "Fitness Bands"
     }
   ];
 
@@ -534,28 +534,28 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center group">
               <div className="bg-white bg-opacity-20 backdrop-blur-sm w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <FaShippingFast className="w-10 h-10 text-white" />
+                <FaShippingFast className="w-10 h-10" />
               </div>
               <h3 className="text-2xl font-semibold text-white mb-4">Free Shipping</h3>
               <p className="text-blue-100">Free shipping on orders over $100 CAD with express delivery options</p>
             </div>
             <div className="text-center group">
               <div className="bg-white bg-opacity-20 backdrop-blur-sm w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <FaShieldAlt className="w-10 h-10 text-white" />
+                <FaShieldAlt className="w-10 h-10" />
               </div>
               <h3 className="text-2xl font-semibold text-white mb-4">Secure Payment</h3>
               <p className="text-blue-100">100% secure payment processing with encryption and fraud protection</p>
             </div>
             <div className="text-center group">
               <div className="bg-white bg-opacity-20 backdrop-blur-sm w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <FaHeadset className="w-10 h-10 text-white" />
+                <FaHeadset className="w-10 h-10" />
               </div>
               <h3 className="text-2xl font-semibold text-white mb-4">Expert Support</h3>
               <p className="text-blue-100">24/7 health and fitness expert support to guide your wellness journey</p>
             </div>
             <div className="text-center group">
               <div className="bg-white bg-opacity-20 backdrop-blur-sm w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                <FaGift className="w-10 h-10 text-white" />
+                <FaGift className="w-10 h-10" />
               </div>
               <h3 className="text-2xl font-semibold text-white mb-4">Health Rewards</h3>
               <p className="text-blue-100">Earn points on every purchase and unlock exclusive health benefits</p>
@@ -565,37 +565,35 @@ const Home = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-20 bg-gradient-to-r from-green-600 via-teal-600 to-cyan-700 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.1),transparent)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(255,255,255,0.1),transparent)]"></div>
+      <section className="py-20 bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.15),transparent)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(255,255,255,0.12),transparent)]"></div>
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <div className="inline-flex items-center px-4 py-2 bg-white bg-opacity-20 rounded-full text-white text-sm font-medium mb-6 backdrop-blur-sm">
-            <FaGift className="mr-2" />
+          <div className="inline-flex items-center px-4 py-2 bg-opacity-20 rounded-full text-teal-100 text-sm font-medium mb-6 backdrop-blur-sm border border-white border-opacity-30 shadow-lg">
+            <FaGift className="mr-2 text-yellow-300" />
             Exclusive Health Tips & Offers
           </div>
-          <h2 className="text-5xl font-bold text-white mb-6">Stay Updated on Your Health Journey</h2>
-          <p className="text-xl text-green-100 mb-8 leading-relaxed">
-            Join our wellness community and get 15% off your first order, plus exclusive health tips, 
+          <h2 className="text-5xl font-bold text-white mb-6 drop-shadow-lg">Stay Updated on Your Health Journey</h2>
+          <p className="text-xl text-teal-100 mb-8 leading-relaxed">
+            Join our wellness community and get <span className="font-bold text-yellow-200">15% off</span> your first order, plus exclusive health tips, 
             product recommendations, and early access to new arrivals
           </p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto mb-8">
             <input
               type="email"
               placeholder="Enter your email for health updates"
-              className="flex-1 px-6 py-4 rounded-xl border-0 focus:ring-4 focus:ring-green-300 focus:outline-none text-gray-900 placeholder-gray-500"
+              className="flex-1 px-6 py-4 rounded-xl border border-white text-white placeholder:text-teal-200 bg-transparent focus:outline-none focus:ring-2 focus:ring-teal-300 transition-colors"
             />
-            <button className="bg-white text-green-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center">
+            <button className="bg-teal-500 text-white px-8 py-4 rounded-xl font-semibold hover:blue-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl">
               <span>Get 15% Off</span>
               <FaArrowRight className="ml-2" />
             </button>
           </div>
-          <p className="text-green-100 text-sm">
+          <p className="text-teal-100 text-sm">
             🔒 We respect your privacy. Unsubscribe at any time.
           </p>
         </div>
       </section>
-
-      {/* About Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -672,7 +670,7 @@ const Home = () => {
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl transform rotate-6"></div>
                 <div className="relative bg-white rounded-3xl p-8 shadow-2xl">
                   <img
-                    src="/20-degrees-logo.png"
+                    src="/20-degrees-weight-management-app.png"
                     alt="20 Degrees Health & Wellness"
                     className="w-full h-64 object-contain mb-6"
                   />

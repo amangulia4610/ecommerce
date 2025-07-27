@@ -12,6 +12,7 @@ import VerifyOTP from "../pages/VerifyOTP";
 import ResetPassword from "../pages/ResetPassword";
 import MyAccount from "../pages/MyAccount";
 import Orders from "../pages/Orders";
+import OrderDetails from "../pages/OrderDetails";
 import Addresses from "../pages/Addresses";
 import AdminDashboard from "../pages/AdminDashboard";
 import CategoryManagement from "../pages/CategoryManagement";
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "/orders",
         element: <Orders />,
+      },
+      {
+        path: "/orders/:orderId",
+        element: <OrderDetails />,
       },
       {
         path: "/addresses",

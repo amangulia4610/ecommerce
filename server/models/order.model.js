@@ -1,5 +1,31 @@
 import mongoose from "mongoose";
 
+const orderItemSchema = new mongoose.Schema({
+    productId : {
+        type : mongoose.Schema.ObjectId,
+        ref : "product",
+        required : true
+    },
+    product_details : {
+        name : String,
+        image : Array,
+        price : Number
+    },
+    quantity : {
+        type : Number,
+        required : true,
+        min : 1
+    },
+    price : {
+        type : Number,
+        required : true
+    },
+    subTotal : {
+        type : Number,
+        required : true
+    }
+});
+
 const orderSchema = new mongoose.Schema({
     userId : {
         type : mongoose.Schema.ObjectId,
@@ -10,14 +36,7 @@ const orderSchema = new mongoose.Schema({
         required : [true, "Provide orderId"],
         unique : true
     },
-    productId : {
-        type : mongoose.Schema.ObjectId,
-        ref : "product"
-    },
-    product_details : {
-        name : String,
-        image : Array,
-    },
+    items : [orderItemSchema], // Array of order items
     paymentId : {
         type : String,
         default : ""
@@ -35,10 +54,6 @@ const orderSchema = new mongoose.Schema({
         type : String,
         enum : ['COD', 'Online'],
         default : 'COD'
-    },
-    quantity : {
-        type : Number,
-        default : 1
     },
     delivery_address : {
         type : mongoose.Schema.ObjectId,

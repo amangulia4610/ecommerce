@@ -116,7 +116,7 @@ const ProductCard = ({
               <img
                 src={product.image?.[0] || '/placeholder-image.jpg'}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </Link>
             {product.discount > 0 && (
@@ -194,7 +194,7 @@ const ProductCard = ({
             <img
               src={product.image?.[0] || '/placeholder-image.jpg'}
               alt={product.name}
-              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-48 object-contain group-hover:scale-105 transition-transform duration-300"
             />
           </Link>
           {product.discount > 0 && (
@@ -254,7 +254,7 @@ const ProductCard = ({
           <img
             src={product.image?.[0] || '/placeholder-image.jpg'}
             alt={product.name}
-            className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-64 object-contain group-hover:scale-105 transition-transform duration-300"
           />
         </Link>
         {product.discount > 0 && (

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   FaBox, 
   FaTruck, 
@@ -7,13 +8,18 @@ import {
   FaEye,
   FaClock,
   FaFilter,
-  FaSearch
+  FaSearch,
+  FaCalendarAlt,
+  FaCreditCard,
+  FaMapMarkerAlt,
+  FaShoppingBag
 } from 'react-icons/fa';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
 import { formatPrice } from '../utils/currency';
 
 const Orders = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -61,32 +67,32 @@ const Orders = () => {
   };
 
   const getStatusIcon = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'delivered':
-        return <FaCheckCircle className="text-green-500" />;
-      case 'placed':
-        return <FaClock className="text-yellow-500" />;
-      case 'in transit':
-        return <FaTruck className="text-blue-500" />;
-      case 'cancelled':
-        return <FaTimesCircle className="text-red-500" />;
+    switch (status) {
+      case 'Delivered':
+        return <FaCheckCircle className="text-green-500 text-lg" />;
+      case 'Placed':
+        return <FaClock className="text-yellow-500 text-lg" />;
+      case 'In Transit':
+        return <FaTruck className="text-blue-500 text-lg" />;
+      case 'Cancelled':
+        return <FaTimesCircle className="text-red-500 text-lg" />;
       default:
-        return <FaBox className="text-gray-500" />;
+        return <FaBox className="text-gray-500 text-lg" />;
     }
   };
 
   const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'delivered':
-        return 'bg-green-100 text-green-800';
-      case 'placed':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'in transit':
-        return 'bg-blue-100 text-blue-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
+    switch (status) {
+      case 'Delivered':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'Placed':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'In Transit':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Cancelled':
+        return 'bg-red-100 text-red-800 border-red-200';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -106,6 +112,10 @@ const Orders = () => {
       [key]: value,
       page: 1 // Reset to first page when filtering
     }));
+  };
+
+  const handleViewDetails = (orderId) => {
+    navigate(`/orders/${orderId}`);
   };
 
   const handlePageChange = (newPage) => {
@@ -137,12 +147,19 @@ const Orders = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Orders</h1>
-          <p className="text-gray-600">Track and manage your order history</p>
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="p-3 bg-blue-100 rounded-lg">
+              <FaShoppingBag className="text-blue-600 text-xl" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
+              <p className="text-gray-600">Track and manage your order history</p>
+            </div>
+          </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
+        <div className="bg-white p-6 rounded-xl shadow-sm mb-6 border border-gray-100">
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex items-center space-x-2">
               <FaFilter className="text-gray-500" />
@@ -152,7 +169,7 @@ const Orders = () => {
             <select
               value={filters.delivery_status}
               onChange={(e) => handleFilterChange('delivery_status', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             >
               <option value="">All Delivery Status</option>
               <option value="Placed">Placed</option>
@@ -163,7 +180,7 @@ const Orders = () => {
             <select
               value={filters.payment_status || ''}
               onChange={(e) => handleFilterChange('payment_status', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             >
               <option value="">All Payment Status</option>
               <option value="pending">Pending</option>
@@ -174,7 +191,7 @@ const Orders = () => {
             <select
               value={filters.sortBy}
               onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             >
               <option value="createdAt">Order Date</option>
               <option value="totalAmt">Amount</option>
@@ -184,7 +201,7 @@ const Orders = () => {
             <select
               value={filters.sortOrder}
               onChange={(e) => handleFilterChange('sortOrder', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             >
               <option value="desc">Newest First</option>
               <option value="asc">Oldest First</option>
@@ -193,89 +210,124 @@ const Orders = () => {
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            {error}
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center space-x-2">
+            <FaTimesCircle />
+            <span>{error}</span>
           </div>
         )}
 
         {/* Orders List */}
         {orders.length === 0 ? (
-          <div className="bg-white p-8 rounded-lg shadow-sm text-center">
-            <FaBox className="mx-auto text-gray-400 text-6xl mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Orders Found</h3>
-            <p className="text-gray-600">You haven't placed any orders yet.</p>
+          <div className="bg-white p-12 rounded-xl shadow-sm text-center border border-gray-100">
+            <div className="flex flex-col items-center">
+              <div className="p-4 bg-gray-100 rounded-full mb-4">
+                <FaBox className="text-gray-400 text-4xl" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Orders Found</h3>
+              <p className="text-gray-600 mb-6">You haven't placed any orders yet.</p>
+              <button 
+                onClick={() => navigate('/shop')}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Start Shopping
+              </button>
+            </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {orders.map((order) => (
-              <div key={order._id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                  {/* Order Info */}
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-4 mb-4">
-                      <div className="flex items-center space-x-2">
-                        {getStatusIcon(order.delivery_status || order.payment_status)}
-                        <div>
-                          <p className="font-semibold text-gray-900">Order #{order.orderId}</p>
-                          <p className="text-sm text-gray-500">{formatDate(order.createdAt)}</p>
+              <div key={order._id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200">
+                <div className="p-6">
+                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                    {/* Order Info */}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-3">
+                          {getStatusIcon(order.delivery_status || order.payment_status)}
+                          <div>
+                            <p className="font-semibold text-gray-900 text-lg">Order #{order.orderId}</p>
+                            <div className="flex items-center space-x-2 text-sm text-gray-500">
+                              <FaCalendarAlt className="text-xs" />
+                              <span>{formatDate(order.createdAt)}</span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div className="flex flex-col space-y-1">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.delivery_status || 'placed')}`}>
+                        
+                        <span className={`px-4 py-2 rounded-full text-sm font-medium border ${getStatusColor(order.delivery_status || 'Placed')}`}>
                           {order.delivery_status || 'Placed'}
                         </span>
-                        <span className="text-xs text-gray-500">
-                          Payment: {order.payment_status || 'pending'}
-                        </span>
                       </div>
-                    </div>
 
-                    {/* Product Details */}
-                    {order.productId && (
-                      <div className="flex items-center space-x-4 mb-4">
-                        {order.product_details?.image?.[0] && (
-                          <img
-                            src={order.product_details.image[0]}
-                            alt={order.product_details.name}
-                            className="w-16 h-16 object-cover rounded-md border"
-                          />
-                        )}
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {order.product_details?.name || order.productId.name}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Qty: {order.quantity || 1} • Subtotal: {formatPrice(order.subTotalAmt)}
-                          </p>
-                          {order.payment_method && (
-                            <p className="text-xs text-gray-400">
-                              Payment: {order.payment_method}
-                            </p>
+                      {/* Product Details */}
+                      {order.items && order.items.length > 0 && (
+                        <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                          {order.items.map((item, index) => (
+                            <div key={index} className="flex items-center space-x-4 border-b border-gray-200 pb-3 mb-3 last:border-b-0 last:pb-0 last:mb-0">
+                              {item.product_details?.image?.[0] && (
+                                <img
+                                  src={item.product_details.image[0]}
+                                  alt={item.product_details.name}
+                                  className="w-16 h-16 object-contain rounded-lg border border-gray-200 bg-white"
+                                />
+                              )}
+                              <div className="flex-1">
+                                <p className="font-medium text-gray-900 mb-1">
+                                  {item.product_details?.name || item.productId?.name}
+                                </p>
+                                <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                                  <div>Qty: {item.quantity || 1}</div>
+                                  <div>Subtotal: {formatPrice(item.subTotal || 0)}</div>
+                                </div>
+                                <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                                  <div className="flex items-center space-x-1">
+                                    <FaCreditCard />
+                                    <span>Payment: {order.payment_method || 'COD'}</span>
+                                  </div>
+                                  <div>Status: {order.payment_status || 'pending'}</div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          {order.items.length > 1 && (
+                            <div className="mt-3 pt-3 border-t border-gray-200">
+                              <div className="flex justify-between items-center text-sm">
+                                <span className="font-medium text-gray-700">Total Items: {order.items.reduce((total, item) => total + (item.quantity || 0), 0)}</span>
+                                <span className="font-medium text-gray-900">Order Total: {formatPrice(order.totalAmt)}</span>
+                              </div>
+                            </div>
                           )}
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Delivery Address */}
-                    {order.delivery_address && (
-                      <div className="text-sm text-gray-600 mb-4">
-                        <p className="font-medium">Delivery Address:</p>
-                        <p>{order.delivery_address.address_line}</p>
-                        <p>{order.delivery_address.city}, {order.delivery_address.state} {order.delivery_address.pincode}</p>
-                      </div>
-                    )}
-                  </div>
+                      {/* Delivery Address */}
+                      {order.delivery_address && (
+                        <div className="flex items-start space-x-2 text-sm text-gray-600">
+                          <FaMapMarkerAlt className="text-gray-400 mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-medium text-gray-700">Delivery Address:</p>
+                            <p>{order.delivery_address.address_line}</p>
+                            <p>{order.delivery_address.city}, {order.delivery_address.state} {order.delivery_address.pincode}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
-                  {/* Order Summary */}
-                  <div className="lg:text-right mt-4 lg:mt-0">
-                    <p className="text-2xl font-bold text-gray-900 mb-2">
-                      {formatPrice(order.totalAmt)}
-                    </p>
-                    <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-                      <FaEye />
-                      <span>View Details</span>
-                    </button>
+                    {/* Order Summary */}
+                    <div className="lg:text-right">
+                      <div className="bg-blue-50 rounded-lg p-4 mb-4">
+                        <p className="text-sm text-gray-600 mb-1">Total Amount</p>
+                        <p className="text-2xl font-bold text-blue-600">
+                          {formatPrice(order.totalAmt)}
+                        </p>
+                      </div>
+                      <button 
+                        onClick={() => handleViewDetails(order._id)}
+                        className="w-full lg:w-auto flex items-center justify-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                      >
+                        <FaEye />
+                        <span>View Details</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -289,19 +341,19 @@ const Orders = () => {
             <button
               onClick={() => handlePageChange(pagination.currentPage - 1)}
               disabled={!pagination.hasPrevPage}
-              className="px-3 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Previous
             </button>
             
-            <span className="px-3 py-2 text-gray-700">
+            <span className="px-4 py-2 text-gray-700 bg-gray-50 rounded-lg">
               Page {pagination.currentPage} of {pagination.totalPages}
             </span>
             
             <button
               onClick={() => handlePageChange(pagination.currentPage + 1)}
               disabled={!pagination.hasNextPage}
-              className="px-3 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Next
             </button>

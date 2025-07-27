@@ -44,7 +44,9 @@ export async function createOrderController(req, res) {
       }));
     }
 
-    const orders = [];
+    // Validate all products and prepare order items
+    const processedItems = [];
+    let totalOrderAmount = 0;
 
     for (const item of orderItems) {
       const product = item.product || await ProductModel.findById(item.productId);
@@ -59,39 +61,50 @@ export async function createOrderController(req, res) {
 
       if (product.stock < item.quantity) {
         return res.status(400).json({
-          message: `Insufficient stock for ${product.name}`,
+          message: `Insufficient stock for ${product.name}. Available: ${product.stock}, Requested: ${item.quantity}`,
           error: true,
           success: false,
         });
       }
 
-      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      const subTotalAmt = product.price * item.quantity;
-      const totalAmt = subTotalAmt; // Can add shipping, tax later
+      const itemSubTotal = product.price * item.quantity;
+      totalOrderAmount += itemSubTotal;
 
-      const order = new OrderModel({
-        userId,
-        orderId,
+      processedItems.push({
         productId: product._id,
         product_details: {
           name: product.name,
           image: product.image,
+          price: product.price
         },
-        delivery_address,
-        subTotalAmt,
-        totalAmt,
-        payment_method,
         quantity: item.quantity,
-        payment_status: payment_method === 'COD' ? 'pending' : 'pending',
-        delivery_status: 'Placed'
+        price: product.price,
+        subTotal: itemSubTotal
       });
+    }
 
-      const savedOrder = await order.save();
-      orders.push(savedOrder);
+    // Generate single order ID for all items
+    const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-      // Update product stock
+    // Create single order with all items
+    const order = new OrderModel({
+      userId,
+      orderId,
+      items: processedItems,
+      delivery_address,
+      subTotalAmt: totalOrderAmount,
+      totalAmt: totalOrderAmount, // Can add shipping, tax later
+      payment_method,
+      payment_status: payment_method === 'COD' ? 'pending' : 'pending',
+      delivery_status: 'Placed'
+    });
+
+    const savedOrder = await order.save();
+
+    // Update product stock for all items
+    for (const item of orderItems) {
       await ProductModel.findByIdAndUpdate(
-        product._id,
+        item.productId,
         { $inc: { stock: -item.quantity } }
       );
     }
@@ -105,7 +118,7 @@ export async function createOrderController(req, res) {
       message: "Order placed successfully",
       error: false,
       success: true,
-      data: orders,
+      data: savedOrder,
     });
   } catch (error) {
     console.error("Error in createOrderController:", error);
@@ -148,8 +161,9 @@ export async function getUserOrdersController(req, res) {
     sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
     const orders = await OrderModel.find(filter)
-      .populate('productId', 'name image price')
+      .populate('items.productId', 'name image price')
       .populate('delivery_address')
+      .populate('userId', 'name email mobile')
       .sort(sortOptions)
       .skip(skip)
       .limit(parseInt(limit));
@@ -215,7 +229,7 @@ export async function getOrdersController(req, res) {
 
     const orders = await OrderModel.find(filter)
       .populate('userId', 'name email mobile')
-      .populate('productId', 'name image price')
+      .populate('items.productId', 'name image price')
       .populate('delivery_address')
       .sort(sortOptions)
       .skip(skip)
@@ -272,7 +286,7 @@ export async function getOrderController(req, res) {
 
     const order = await OrderModel.findById(id)
       .populate('userId', 'name email mobile avatar')
-      .populate('productId', 'name image price description')
+      .populate('items.productId', 'name image price description')
       .populate('delivery_address');
 
     if (!order) {
@@ -291,6 +305,40 @@ export async function getOrderController(req, res) {
     });
   } catch (error) {
     console.error("Error in getOrderController:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: true,
+      success: false,
+    });
+  }
+}
+
+// Get single order for user (user can only access their own orders)
+export async function getUserOrderController(req, res) {
+  try {
+    const { id } = req.params;
+    const userId = req.userId; // From auth middleware
+
+    const order = await OrderModel.findOne({ _id: id, userId: userId })
+      .populate('items.productId', 'name image price description')
+      .populate('delivery_address');
+
+    if (!order) {
+      return res.status(404).json({
+        message: "Order not found",
+        error: true,
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Order retrieved successfully",
+      error: false,
+      success: true,
+      data: order,
+    });
+  } catch (error) {
+    console.error("Error in getUserOrderController:", error);
     return res.status(500).json({
       message: "Internal server error",
       error: true,
@@ -326,7 +374,7 @@ export async function updateOrderStatusController(req, res) {
       updateData,
       { new: true }
     ).populate('userId', 'name email mobile')
-     .populate('productId', 'name image price')
+     .populate('items.productId', 'name image price')
      .populate('delivery_address');
 
     return res.status(200).json({
