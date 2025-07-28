@@ -1,4 +1,4 @@
-// API proxy to handle all backend requests
+// API handler for all routes
 import app from '../server/index.js';
 
 export default app;
