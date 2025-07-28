@@ -1,7 +1,7 @@
 import Search from './Search.jsx';
 import UserMenu from './UserMenu.jsx';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa';
+import { FaShoppingCart, FaUser } from 'react-icons/fa';
 import { useState } from 'react';
 import useAuth from '../hooks/useAuth.js';
 import { useCart } from '../hooks/useCart.js';
@@ -10,7 +10,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
   const { totalItems } = useCart();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // Remove mobile menu state
 
   const handleLogoClick = () => {
     navigate('/');
@@ -172,13 +172,13 @@ const Header = () => {
                   </span>
                 )}
               </button>
-              
-              {/* Mobile Menu Toggle */}
+              {/* User Icon (replaces hamburger/cross) */}
               <button
                 className="p-2 text-gray-600 hover:text-blue-600 transition-colors"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={isLoggedIn ? undefined : handleLoginClick}
+                aria-label="User"
               >
-                {isMobileMenuOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
+                {isLoggedIn ? <UserMenu /> : <FaUser className="w-6 h-6" />}
               </button>
             </div>
           </div>
@@ -188,31 +188,7 @@ const Header = () => {
             <Search />
           </div>
 
-          {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className="border-t border-gray-200 bg-white">
-              <div className="px-6 py-4 space-y-4">
-                {/* User Actions */}
-                <div>
-                  {isLoggedIn ? (
-                    <div className="space-y-3">
-                      <UserMenu />
-                    </div>
-                  ) : (
-                    <button 
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-full font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
-                      onClick={() => {
-                        handleLoginClick();
-                        setIsMobileMenuOpen(false);
-                      }}
-                    >
-                      Login
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Mobile Menu removed, user icon handles login/menu */}
         </div>
       </div>
     </header>
