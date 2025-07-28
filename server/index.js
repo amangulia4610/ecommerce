@@ -17,7 +17,7 @@ import orderRouter from './route/order.route.js'
 const app = express()
 app.use(cors({
     credentials : true,
-    origin : process.env.FRONTEND_URL
+    origin : process.env.FRONTEND_URL || true
 }))
 app.use(express.json())
 app.use(cookieParser())

@@ -1,4 +1,4 @@
-export const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+export const baseUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.PROD ? "" : "http://localhost:8080");
 
 const SummaryApi = {
     register : {
