@@ -1,10 +1,21 @@
 {
   "version": 2,
-  "functions": {
-    "server/index.js": {
-      "maxDuration": 30
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "server/index.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 30
+      }
     }
-  },
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
@@ -13,15 +24,6 @@
     {
       "src": "/(.*)",
       "dest": "client/dist/$1"
-    }
-  ],
-  "builds": [
-    {
-      "src": "client/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
     }
   ]
 }
