@@ -26,12 +26,24 @@ app.use(helmet({
     crossOriginResourcePolicy : false
 }))
 
-const PORT = 8080 || process.env.PORT 
+const PORT = process.env.PORT || 8080 
 
 app.get("/",(request,response)=>{
     ///server to client
     response.json({
-        message : "Server is running " + PORT
+        message : "Server is running " + PORT,
+        status: "healthy",
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development'
+    })
+})
+
+// Health check endpoint
+app.get("/api/health",(request,response)=>{
+    response.json({
+        status: "healthy",
+        message: "API server is running",
+        timestamp: new Date().toISOString()
     })
 })
 

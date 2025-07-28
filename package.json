@@ -1,9 +1,13 @@
 {
-  "name": "bulk-upload",
+  "name": "ecommerce-vercel",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "upload": "node bulk_upload_products.js"
+    "upload": "node bulk_upload_products.js",
+    "build": "cd client && npm run build",
+    "install-client": "cd client && npm install",
+    "install-server": "cd server && npm install",
+    "vercel-build": "npm run install-client && npm run install-server && npm run build"
   },
   "dependencies": {
     "mongoose": "^8.0.0",
