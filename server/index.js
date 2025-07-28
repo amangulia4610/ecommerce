@@ -61,13 +61,17 @@ app.use('/api/cart',cartRouter)
 app.use('/api/admin/user',userAdminRouter)
 app.use('/api/address',addressRouter)
 app.use('/api/order',orderRouter)
+
 // Connect to MongoDB
-connectDB().then(() => {
-app.listen(PORT,()=>{
-    console.log("Server is running on port " + PORT)
-})
-}).catch((error) => {
+connectDB().catch((error) => {
     console.error("Failed to connect to MongoDB:", error)
-    process.exit(1) // Exit the process with failure
 })
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT,()=>{
+        console.log("Server is running on port " + PORT)
+    })
+}
+
 export default app
