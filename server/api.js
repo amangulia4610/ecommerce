@@ -5,12 +5,16 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import connectDB from './config/connectDB.js';
 
 // Load environment variables
 dotenv.config();
 
 // Create Express app
 const app = express();
+
+// Connect to MongoDB
+connectDB().catch(console.error);
 
 // Middleware
 app.use(cors({
@@ -42,26 +46,22 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Simple category test endpoint
-app.get('/api/category/get-categories', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Categories endpoint working',
-        data: [
-            { _id: '1', name: 'Test Category', image: '' }
-        ]
-    });
-});
+// Import and use real routes
+import userRouter from './route/user.route.js';
+import categoryRouter from './route/category.route.js';
+import productRouter from './route/product.route.js';
+import cartRouter from './route/cart.route.js';
+import userAdminRouter from './route/user.admin.route.js';
+import addressRouter from './route/address.route.js';
+import orderRouter from './route/order.route.js';
 
-// Simple product test endpoint
-app.get('/api/product/get-products', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Products endpoint working',
-        data: [
-            { _id: '1', name: 'Test Product', price: 100, image: [] }
-        ]
-    });
-});
+// Use routes
+app.use('/api/user', userRouter);
+app.use('/api/category', categoryRouter);
+app.use('/api/product', productRouter);
+app.use('/api/cart', cartRouter);
+app.use('/api/admin/user', userAdminRouter);
+app.use('/api/address', addressRouter);
+app.use('/api/order', orderRouter);
 
 export default app;
