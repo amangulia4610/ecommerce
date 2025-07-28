@@ -1,4 +1,5 @@
-export const baseUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.PROD ? "" : "http://localhost:8080");
+// Use relative URLs in production (same domain), localhost in development
+export const baseUrl = import.meta.env.PROD ? "" : "http://localhost:8080";
 
 const SummaryApi = {
     register : {
