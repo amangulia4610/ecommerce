@@ -110,7 +110,7 @@ const Home = () => {
           limit: 8,
           publish: 'true',
           sortBy: 'stock',
-          sortOrder: 'asc' // Lower stock suggests higher sales
+          sortOrder: 'desc' // Lower stock suggests higher sales
         }
       });
 
@@ -157,13 +157,19 @@ const Home = () => {
     }
   };
 
+  // Helper function to get category ID by name
+  const getCategoryLink = (categoryName) => {
+    const category = categories.find(cat => cat.name.toLowerCase().includes(categoryName.toLowerCase()));
+    return category ? `/shop?category=${category._id}` : '/shop';
+  };
+
   const heroSlides = [
     {
       title: "Premium Health & Wellness",
       subtitle: "Transform Your Lifestyle",
       description: "Discover cutting-edge health technology, premium supplements, and fitness solutions for the modern wellness enthusiast",
       buttonText: "Explore Collection",
-      secondaryText: "Watch Demo",
+      secondaryText: "View Smartwatches",
       image: "/apple-watch.png",
       bgColor: "from-slate-900 via-purple-900 to-slate-900",
       category: "Smartwatches",
@@ -174,10 +180,10 @@ const Home = () => {
       subtitle: "Fuel Your Performance",
       description: "Premium protein powders and multivitamins formulated by nutritionists for optimal health and performance",
       buttonText: "Shop Nutrition",
-      secondaryText: "Learn More",
+      secondaryText: "View Protein Powders",
       image: "/protien.png",
       bgColor: "from-emerald-900 via-teal-900 to-emerald-900",
-      category: "Supplements",
+      category: "Protein Powders",
       offer: "Buy 2 Get 1 Free"
     },
     {
@@ -185,10 +191,10 @@ const Home = () => {
       subtitle: "Your Health, Simplified",
       description: "Professional-grade health monitors and fitness trackers for real-time insights into your wellness journey",
       buttonText: "Monitor Health",
-      secondaryText: "View Features",
+      secondaryText: "View Fitness Bands",
       image: "/fitbit inspire 3.png",
       bgColor: "from-indigo-900 via-blue-900 to-indigo-900",
-      category: "Health Tech",
+      category: "Fitness Bands",
       offer: "Free Shipping"
     }
   ];
@@ -246,10 +252,10 @@ const Home = () => {
                       <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                     </button>
                     <button 
-                      onClick={() => navigate('/shop')}
+                      onClick={() => navigate(getCategoryLink(slide.category))}
                       className="group border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/10 transition-all duration-300 backdrop-blur-sm flex items-center justify-center gap-3"
                     >
-                      <FaPlay className="text-sm" />
+                      <FaEye className="text-sm" />
                       <span>{slide.secondaryText}</span>
                     </button>
                   </div>
@@ -258,14 +264,11 @@ const Home = () => {
                 {/* Product showcase */}
                 <div className="hidden lg:block relative">
                   <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-3xl blur-3xl transform rotate-6 group-hover:rotate-12 transition-transform duration-500"></div>
-                    <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
-                      <img 
-                        src={slide.image} 
-                        alt={slide.title}
-                        className="w-80 h-80 object-contain drop-shadow-2xl transform group-hover:scale-105 transition-transform duration-500"
-                      />
-                    </div>
+                    <img 
+                      src={slide.image} 
+                      alt={slide.title}
+                      className="w-80 h-80 object-contain drop-shadow-2xl transform group-hover:scale-105 transition-transform duration-500"
+                    />
                   </div>
                 </div>
               </div>
@@ -273,35 +276,21 @@ const Home = () => {
           ))}
         </div>
         
-        {/* Navigation */}
-        <div className="absolute inset-x-0 bottom-8 flex justify-center gap-3 z-20">
-          {heroSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-12 h-1.5 rounded-full transition-all duration-300 ${
-                index === currentSlide 
-                  ? 'bg-white shadow-lg' 
-                  : 'bg-white/30 hover:bg-white/50'
-              }`}
-            />
-          ))}
-        </div>
-        
-        {/* Arrow navigation */}
+        {/* Arrow navigation - Hidden on mobile */}
         <button 
           onClick={prevSlide}
-          className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 z-20"
+          className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 z-20 hidden md:flex"
         >
           <FaChevronLeft />
         </button>
         <button 
           onClick={nextSlide}
-          className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 z-20"
+          className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:scale-110 z-20 hidden md:flex"
         >
           <FaChevronRight />
         </button>
       </section>
+
 
       {/* Quick Stats - Modern Cards */}
       <section className="relative -mt-20 z-10 pb-16">
@@ -327,6 +316,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      
 
       {/* Categories Section - Modern Grid */}
       <section className="py-16 bg-white">

@@ -19,6 +19,13 @@ import CategoryManagement from "../pages/CategoryManagement";
 import ProductManagement from "../pages/ProductManagement";
 import OrderManagement from "../pages/OrderManagement";
 import UserManagement from "../pages/UserManagement";
+import About from "../pages/About";
+import Contact from "../pages/Contact";
+import HelpCenter from "../pages/HelpCenter";
+import Returns from "../pages/Returns";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import TermsOfService from "../pages/TermsOfService";
+import CookiePolicy from "../pages/CookiePolicy";
 
 const router = createBrowserRouter([
   { 
@@ -100,6 +107,34 @@ const router = createBrowserRouter([
       {
         path: "/admin/users",
         element: <UserManagement />,
+      },
+      {
+        path: "/about",
+        element: <About />,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
+      },
+      {
+        path: "/help",
+        element: <HelpCenter />,
+      },
+      {
+        path: "/returns",
+        element: <Returns />,
+      },
+      {
+        path: "/privacy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/terms",
+        element: <TermsOfService />,
+      },
+      {
+        path: "/cookies",
+        element: <CookiePolicy />,
       }
       
 

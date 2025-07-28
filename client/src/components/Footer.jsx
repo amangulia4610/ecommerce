@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {FaFacebook, FaTwitter, FaInstagram} from 'react-icons/fa';
 const Footer = () => {
   return (
@@ -19,10 +20,10 @@ const Footer = () => {
           <div>
             <h3 className="text-gray-900 font-semibold mb-4" style={{ fontFamily: "'Optima', 'Inter', 'Roboto', Arial, sans-serif" }}>Quick Links</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Home</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Products</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Categories</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">About Us</a></li>
+              <li><Link to="/" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Home</Link></li>
+              <li><Link to="/shop" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Products</Link></li>
+              <li><Link to="/shop" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Categories</Link></li>
+              <li><Link to="/about" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">About Us</Link></li>
             </ul>
           </div>
 
@@ -30,10 +31,10 @@ const Footer = () => {
           <div>
             <h3 className="text-gray-900 font-semibold mb-4" style={{ fontFamily: "'Optima', 'Inter', 'Roboto', Arial, sans-serif" }}>Customer Service</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Contact Us</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Help Center</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Returns</a></li>
-              <li><a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Privacy Policy</a></li>
+              <li><Link to="/contact" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Contact Us</Link></li>
+              <li><Link to="/help" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Help Center</Link></li>
+              <li><Link to="/returns" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Returns</Link></li>
+              <li><Link to="/privacy" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Privacy Policy</Link></li>
             </ul>
           </div>
 
@@ -76,9 +77,9 @@ const Footer = () => {
             © 2025 20 Degrees. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Terms of Service</a>
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Privacy Policy</a>
-            <a href="#" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Cookie Policy</a>
+            <Link to="/terms" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Terms of Service</Link>
+            <Link to="/privacy" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Privacy Policy</Link>
+            <Link to="/cookies" className="text-gray-600 hover:text-blue-600 transition-colors text-sm">Cookie Policy</Link>
           </div>
         </div>
       </div>
