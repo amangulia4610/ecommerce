@@ -1,4 +1,4 @@
-# 20 Degrees Ecommerce Platform - Technical Documentation
+# 20 Degrees Ecommerce Platform 
 
 ## 📋 Project Overview
 
