@@ -1,8 +1,8 @@
-# 20 Degrees Ecommerce Platform - Technical Documentation
+# 10 Fit Ecommerce Platform - Technical Documentation
 
 ## 📋 Project Overview
 
-**20 Degrees** is a full-stack ecommerce web application built for health & wellness products. The platform features a modern React frontend with a robust Express.js backend, deployed on Vercel with MongoDB Atlas for data persistence.
+**10 Fit** is a full-stack ecommerce web application built for health & wellness products. The platform features a modern React frontend with a robust Express.js backend, deployed on Vercel with MongoDB Atlas for data persistence.
 
 ## 🏗️ Architecture Overview
 
@@ -17,12 +17,14 @@
 ## 🚀 Deployment Strategy
 
 ### Frontend Deployment (Vercel)
+
 - **Platform**: Vercel
 - **Framework**: Vite + React
 - **Build Tool**: Vite
 - **URL**: https://20deg.vercel.app
 
 ### Backend Deployment (Vercel)
+
 - **Platform**: Vercel Serverless Functions
 - **Framework**: Express.js
 - **Runtime**: Node.js
@@ -34,7 +36,7 @@
 ecommerce/
 ├── client/                          # Frontend React Application
 │   ├── public/                      # Static assets
-│   │   ├── 20-degrees-logo.png
+│   │   ├── 10-fit-logo.png
 │   │   ├── apple-watch.png
 │   │   └── ...other images
 │   ├── src/
@@ -110,6 +112,7 @@ ecommerce/
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - **Framework**: React 19.1.0
 - **Build Tool**: Vite 6.3.5
 - **Styling**: Tailwind CSS 4.1.11
@@ -120,6 +123,7 @@ ecommerce/
 - **Icons**: React Icons 5.5.0
 
 ### Backend
+
 - **Runtime**: Node.js (ES Modules)
 - **Framework**: Express.js 5.1.0
 - **Database**: MongoDB with Mongoose 8.16.4
@@ -132,11 +136,13 @@ ecommerce/
 - **Logging**: Morgan 1.10.1
 
 ### Database
+
 - **Primary Database**: MongoDB Atlas
 - **ODM**: Mongoose
 - **Collections**: users, products, categories, cartProducts, orders, addresses
 
 ### Deployment & DevOps
+
 - **Frontend Hosting**: Vercel
 - **Backend Hosting**: Vercel Serverless Functions
 - **Database Hosting**: MongoDB Atlas
@@ -147,6 +153,7 @@ ecommerce/
 ## 🔗 API Endpoints
 
 ### Authentication & User Management
+
 ```
 POST   /api/user/register              # User registration
 POST   /api/user/verify-email          # Email verification
@@ -162,6 +169,7 @@ PUT    /api/user/reset-password         # Reset password
 ```
 
 ### Product Management
+
 ```
 GET    /api/product/get-products        # Get products (with filters)
 GET    /api/product/get-product/:id     # Get single product
@@ -172,6 +180,7 @@ PATCH  /api/product/toggle-publish/:id  # Toggle product visibility
 ```
 
 ### Category Management
+
 ```
 GET    /api/category/get-categories     # Get all categories
 GET    /api/category/get-category/:id   # Get single category
@@ -181,6 +190,7 @@ DELETE /api/category/delete-category/:id # Delete category (Admin)
 ```
 
 ### Shopping Cart
+
 ```
 GET    /api/cart/get-cart              # Get user cart
 POST   /api/cart/add-to-cart           # Add item to cart
@@ -190,6 +200,7 @@ DELETE /api/cart/clear-cart           # Clear entire cart
 ```
 
 ### Order Management
+
 ```
 POST   /api/order/create-order         # Create new order
 GET    /api/order/user-orders          # Get user's orders
@@ -202,6 +213,7 @@ GET    /api/order/order-stats          # Get order statistics
 ```
 
 ### Address Management
+
 ```
 GET    /api/address/get-addresses      # Get user addresses
 GET    /api/address/get-address/:id    # Get specific address
@@ -211,6 +223,7 @@ DELETE /api/address/delete-address/:id # Delete address
 ```
 
 ### Admin User Management
+
 ```
 GET    /api/admin/user/all-users       # Get all users
 GET    /api/admin/user/stats           # Get user statistics
@@ -224,6 +237,7 @@ DELETE /api/admin/user/:userId         # Delete user
 ## 🗄️ Database Schema
 
 ### User Model
+
 ```javascript
 {
   name: String (required),
@@ -243,6 +257,7 @@ DELETE /api/admin/user/:userId         # Delete user
 ```
 
 ### Product Model
+
 ```javascript
 {
   name: String (required),
@@ -260,6 +275,7 @@ DELETE /api/admin/user/:userId         # Delete user
 ```
 
 ### Category Model
+
 ```javascript
 {
   name: String (required),
@@ -268,6 +284,7 @@ DELETE /api/admin/user/:userId         # Delete user
 ```
 
 ### Order Model
+
 ```javascript
 {
   userId: ObjectId (ref: 'user'),
@@ -291,11 +308,13 @@ DELETE /api/admin/user/:userId         # Delete user
 ## 🔒 Authentication & Security
 
 ### JWT Authentication
+
 - **Access Token**: Short-lived (15 minutes)
 - **Refresh Token**: Long-lived (7 days)
 - **Storage**: Access token in localStorage, Refresh token in httpOnly cookies
 
 ### Security Measures
+
 - Password hashing with bcryptjs
 - JWT token-based authentication
 - CORS configuration
@@ -307,11 +326,13 @@ DELETE /api/admin/user/:userId         # Delete user
 ## 🌍 Environment Variables
 
 ### Frontend (.env)
+
 ```
 VITE_BACKEND_URL=https://20deg-backend.vercel.app
 ```
 
 ### Backend (.env)
+
 ```
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
 JWT_SECRET_KEY=your-jwt-secret-key
@@ -326,6 +347,7 @@ CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 ## 🚀 Deployment Process
 
 ### Frontend Deployment
+
 1. **Framework**: Vite
 2. **Root Directory**: `./client`
 3. **Build Command**: `vite build`
@@ -333,6 +355,7 @@ CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 5. **Environment Variables**: Set in Vercel dashboard
 
 ### Backend Deployment
+
 1. **Framework**: Other
 2. **Root Directory**: `./server`
 3. **Build Command**: (none)
@@ -342,6 +365,7 @@ CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 ## 📱 Features
 
 ### Customer Features
+
 - User registration and authentication
 - Product browsing with filters and search
 - Shopping cart management
@@ -352,6 +376,7 @@ CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 - Responsive design
 
 ### Admin Features
+
 - Product management (CRUD operations)
 - Category management
 - Order management and status updates
@@ -362,6 +387,7 @@ CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 ## 🔧 Development Setup
 
 ### Prerequisites
+
 ```bash
 Node.js (v18 or higher)
 npm or yarn
@@ -371,6 +397,7 @@ Resend account (for emails)
 ```
 
 ### Local Development
+
 ```bash
 # Clone the repository
 git clone https://github.com/amangulia4610/ecommerce.git
@@ -406,14 +433,17 @@ npm run dev
 ## 🐛 Common Issues & Solutions
 
 ### CORS Issues
+
 - Ensure FRONTEND_URL is set correctly in backend environment
 - Check that VITE_BACKEND_URL is set in frontend environment
 
 ### Database Connection
+
 - Verify MongoDB URI is correct
 - Check network access settings in MongoDB Atlas
 
 ### Image Upload
+
 - Confirm Cloudinary credentials are valid
 - Check file size and format restrictions
 
@@ -431,18 +461,21 @@ npm run dev
 ## 👥 Team Roles & Responsibilities
 
 ### Frontend Developer
+
 - React component development
 - UI/UX implementation
 - State management
 - API integration
 
 ### Backend Developer
+
 - API development
 - Database design
 - Authentication system
 - Business logic implementation
 
 ### DevOps Engineer
+
 - Deployment configuration
 - Environment management
 - Performance monitoring
@@ -451,6 +484,7 @@ npm run dev
 ## 📞 Support & Contact
 
 For technical issues or questions:
+
 - **Repository**: https://github.com/amangulia4610/ecommerce
 - **Frontend URL**: https://20deg.vercel.app
 - **Backend URL**: https://20deg-backend.vercel.app
