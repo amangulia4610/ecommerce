@@ -19,6 +19,7 @@
 ## 📱 Features
 
 ### Demo Access
+
 - **Quick Demo Login**: Try the platform instantly with pre-configured demo credentials
 - **Email**: demo@10fit.com
 - **Password**: demo123456
@@ -54,14 +55,14 @@
 - **Platform**: Vercel
 - **Framework**: Vite + React
 - **Build Tool**: Vite
-- **URL**: https://20deg.vercel.app
+- **URL**: https://10fit.vercel.app
 
 ### Backend Deployment (Vercel)
 
 - **Platform**: Vercel Serverless Functions
 - **Framework**: Express.js
 - **Runtime**: Node.js
-- **URL**: https://20deg-backend.vercel.app
+- **URL**: https://10fit-backend.vercel.app
 
 ## 📁 Project Structure
 
@@ -69,7 +70,7 @@
 ecommerce/
 ├── client/                          # Frontend React Application
 │   ├── public/                      # Static assets
-│   │   ├── 20-degrees-logo.png
+│   │   ├── 10-fit-logo.png
 │   │   ├── apple-watch.png
 │   │   └── ...other images
 │   ├── src/
@@ -361,7 +362,7 @@ DELETE /api/admin/user/:userId         # Delete user
 ### Frontend (.env)
 
 ```
-VITE_BACKEND_URL=https://20deg-backend.vercel.app
+VITE_BACKEND_URL=https://10fit-backend.vercel.app
 ```
 
 ### Backend (.env)
@@ -369,7 +370,7 @@ VITE_BACKEND_URL=https://20deg-backend.vercel.app
 ```
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
 JWT_SECRET_KEY=your-jwt-secret-key
-FRONTEND_URL=https://20deg.vercel.app
+FRONTEND_URL=https://10fit.vercel.app
 NODE_ENV=production
 RESEND_API_KEY=your-resend-api-key
 CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
@@ -472,7 +473,7 @@ npm run dev
 ## Live Links
 
 - **Repository**: https://github.com/amangulia4610/ecommerce
-- **Frontend URL**: https://20deg.vercel.app
-- **Backend URL**: https://20deg-backend.vercel.app
+- **Frontend URL**: https://10fit.vercel.app
+- **Backend URL**: https://10fit-backend.vercel.app
 
 ---

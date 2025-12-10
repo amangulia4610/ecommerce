@@ -1,5 +1,5 @@
 // Use backend URL from environment variable or localhost for development
-export const baseUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.PROD ? "https://20deg-backend.vercel.app" : "http://localhost:8080");
+export const baseUrl = import.meta.env.VITE_BACKEND_URL || (import.meta.env.PROD ? "https://10fit-backend.vercel.app" : "http://localhost:8080");
 
 const SummaryApi = {
     register : {
