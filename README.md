@@ -4,9 +4,11 @@
 
 **10 Fit** is a full-stack ecommerce web application built for health & wellness products. The platform features a modern React frontend with a robust Express.js backend, deployed on Vercel with MongoDB Atlas for data persistence.
 
-<img width="1688" height="860" alt="image" src="https://github.com/user-attachments/assets/22d4d0fe-8e82-4348-b161-ff79f0b2e805" />
+<img width="1702" height="894" alt="image" src="https://github.com/user-attachments/assets/73e7f0f6-58fa-447a-a7ee-16e0378067af" />
 
 ## 🏗️ Architecture Overview
+
+
 
 ```
 ┌─────────────────┐    HTTP/HTTPS    ┌─────────────────┐    MongoDB    ┌─────────────────┐
@@ -35,7 +37,7 @@
 - Order history
 - Responsive design
 
-<img width="1353" height="793" alt="image" src="https://github.com/user-attachments/assets/941eeb51-bc8e-4876-bc00-c240ec459f1b" />
+<img width="1364" height="788" alt="image" src="https://github.com/user-attachments/assets/a9559663-9acf-488d-99a2-17bf91c60275" />
 
 ### Admin Features
 
@@ -46,7 +48,7 @@
 - Dashboard with statistics
 - Inventory management
 
-<img width="1288" height="845" alt="image" src="https://github.com/user-attachments/assets/e6373465-17ab-4d96-8bb3-f9116ee1e859" />
+<img width="1144" height="843" alt="image" src="https://github.com/user-attachments/assets/bae7acb7-ebfd-4792-9daf-ee8301becc9a" />
 
 ## 🚀 Deployment Strategy
 
